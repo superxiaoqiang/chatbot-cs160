@@ -1,0 +1,23 @@
+## Questions:
+## What foods does <restaurant> serve?
+##
+## Returns SQL translation:
+##
+
+% start S
+
+S[SEM=(?np + WHERE + ?vp)] -> NP[SEM=?np] VP[SEM=?vp]
+
+VP[SEM=(?np)] -> IV[SEM=?iv] NP[SEM=?np] P[SEM=?p]
+
+NP[SEM=(?det + ?n)] -> Det[SEM=?det] N[SEM=?n]
+NP[SEM='Restaurant="rest1"'] -> 'rest1'
+NP[SEM='Restaurant="rest2"'] -> 'rest2'
+
+Det[SEM='SELECT'] -> 'Which' | 'What'
+
+N[SEM='food_type FROM restaurant_table'] -> 'types-of-food' | 'food-types' | 'foods'
+
+IV -> 'does'
+P  -> 'serve'
+

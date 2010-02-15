@@ -1,5 +1,5 @@
 #!/bin/bash
-"""
-Starts up the chatbot.
-"""
+
+# Starts up the chatbot.
+
 python lib/eliza.py
