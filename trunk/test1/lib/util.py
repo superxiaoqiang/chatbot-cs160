@@ -11,6 +11,9 @@
 import string
 import re
 import random
+import os
+os.environ['NLTK_DATA'] = os.getcwd()
+from nltk import load_parser
 
 reflections = {
   "am"     : "are",
@@ -48,7 +51,8 @@ class Chat(object):
 
         self._pairs = [(re.compile(x, re.IGNORECASE),y) for (x,y) in pairs]
         self._reflections = reflections
-        self.__interactive = True
+        self._interactive = True
+        self._parser = load_parser('grammars/restaurant.fcfg')
         self.message = ''
 
     # bug: only permits single word expressions to be mapped
@@ -89,6 +93,14 @@ class Chat(object):
         """
 
         # check each pattern
+        parser_pattern = r'^What .*food.* does rest. serve$'
+        parser_pattern = re.compile(parser_pattern, re.IGNORECASE)
+        if parser_pattern.match(str):
+            trees = self._parser.nbest_parse(str.split())
+            answer = trees[0].node['SEM']
+            q = ' '.join(answer)
+            return q
+
         for (pattern, response) in self._pairs:
             match = pattern.match(str)
 
@@ -115,7 +127,7 @@ class Chat(object):
                 print '\033[1;34m' + self.respond(input) + '\033[1;m'
 
     def get_user_message(self):
-        if self.__interactive:
+        if self._interactive:
             return raw_input("> ")
         else:
             return self.message
@@ -124,4 +136,4 @@ class Chat(object):
         self.message = message
 
     def set_interactive(self, interactive):
-        self.__interactive = interactive
+        self._interactive = interactive
