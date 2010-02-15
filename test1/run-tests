@@ -1,0 +1,3 @@
+#!/bin/bash
+export PYTHONPATH=$PYTHONPATH:lib
+python tests/basic_test.py -v
