@@ -1,0 +1,34 @@
+This readme explains how our chatbot works.
+
+
+The structure of our chatbot program:
+
+(+x) chatbot
+    executable, starts up the bot
+
+(+x) run-tests
+    executable, runs the python unittests
+    grabs them from the /tests/ folder
+
+tests/
+    contains a list of tests to run, right now just basic_test.py
+
+lib/
+    library files
+
+    lib/manager.py
+        dialog manager, central piece, running the program starts here
+
+    lib/inputparser.py
+        in: user input
+        out: semantic dictionary
+
+        parses user input and returns a semantic dictionary
+
+    lib/outputgenerator.py
+        in: semantic dictionary
+        out: natural language
+
+        takes in a semantic dictionary and generates output for the bot
+
+
