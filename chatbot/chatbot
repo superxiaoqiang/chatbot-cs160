@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Starts up the chatbot.
+
+python lib/manager.py
