@@ -13,21 +13,31 @@ class inputTest(unittest.TestCase):
         """list input"""
         response = ip.parse("List the 5 most expensive restaurants in Manhattan, New York.")
         
-        self.assertEqual(response['type'] == 'list', True)
-        self.assertEqual(response['price'] == 'expensive', True)
+        self.assertEqual(response['type'], 'list')
+        self.assertEqual(response['price'], 'expensive')
         
     def testInputSingleMore(self):
         """single (more) input"""
         response = ip.parse("I want to know more about Gilt.")
         
-        self.assertEqual(response['type'] == 'single-detail', True)
-        self.assertEqual(response['restaurant'] == 'Gilt', True)
+        self.assertEqual(response['type'], 'single-detail')
+        self.assertEqual(response['restaurant'], 'Gilt')
         
+    def testInputSingleMore(self):
+        """single (cuisine) input"""
+        response = ip.parse("I want a good Mexican restaurant.")
+        self.assertEqual(response['type'], 'single-cuisine')
+        self.assertEqual(response['cuisine'], 'Mexican')
+    
+        response = ip.parse("What is a good Mexican restaurant?")
+        self.assertEqual(response['type'], 'single-cuisine')
+        self.assertEqual(response['cuisine'], 'Mexican')
+
     def testInputQuit(self):
         """quit input"""
         response = ip.parse("quit")
         
-        self.assertEqual(response['type'] == 'quit', True)
+        self.assertEqual(response['type'], 'quit')
         
     def testInputGreeting(self):
         """greeting input"""

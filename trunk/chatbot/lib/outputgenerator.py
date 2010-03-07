@@ -24,6 +24,11 @@ RESPONSES = {
         'Sure, I can tell you more about {0}, shall I?',
         'You want to know more about {0}, is this correct?',
     ),
+    'single-cuisine': (
+        'More information about a {0} restaurant.',
+        'Should I tell you a {0} restaurant?',
+        'You want a {0} restaurant, is this correct?',
+    ),
     'confirmation': (
         'Ok, great.',
         'I\'m glad to hear that.',
@@ -51,6 +56,8 @@ class OutputGenerator:
             response = random.choice(RESPONSES[itype])
         elif itype == 'single-detail':
             response = random.choice(RESPONSES[itype]).format(input['restaurant'])
+        elif itype == 'single-cuisine':
+            response = random.choice(RESPONSES[itype]).format(input['cuisine'])
         else:
             response = str(input)
             
