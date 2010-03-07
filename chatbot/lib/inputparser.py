@@ -23,7 +23,7 @@ grammar = [
       'semantics': {
       'count': r'.*(?P<term>[0-9]+).*',
       'price': r'.*\b(?P<term>expensive|pricey|cheap|low cost)\b.*',
-      'location': r'.*\bin (?P<term>[A-Z][a-z]+(([\s,:]+[A-Z][a-z]+)+)?).*',
+      'location': r'.*\bin (?P<term>[A-Z][a-z]+(([\s,:]+[A-Z][a-z]+)+)?)\b.*',
       },
       'type': 'list',
     },
@@ -33,9 +33,19 @@ grammar = [
       'restaurant': r'.+\b(restaurant|[A-Z]+)\b.*',
       },
       'semantics': {
-      'restaurant': r'.*\b((more about)|(know more)|(restaurant))\b.+?(?P<term>[A-Z][a-z]+(( [A-Z][a-z]+)+)?).*',
+      'restaurant': r'.*\b((more about)|(know more)|(restaurant))\b.+?(?P<term>[A-Z][a-z]+(([\s,:]+[A-Z][a-z]+)+)?)\b.*',
       },
       'type': 'single-detail',
+    },
+    # matches: What is a good Mexican restaurant?
+    { 'matches': {
+      'question': r'(.*\?$)|(^I want.*a good.*restaurant)',
+      'restaurant': r'.+\brestaurant\b.*',
+      },
+      'semantics': {
+      'cuisine': r'.*\b(?P<term>[A-Z][a-z]+(( [A-Z][a-z]+)+)?)\b[\s]+restaurant\b.*',
+      },
+      'type': 'single-cuisine',
     },
     # matches: quit
     { 'matches': {
@@ -55,7 +65,7 @@ grammar = [
     },
     # matches: Yes
     { 'matches': {
-      'greeting': r'yes|yeah|sure|ok|go ahead.{0,20}',
+      'greeting': r'yes|yeah|sure|ok|go ahead|sounds good.{0,20}',
       },
       'semantics': {
       },
