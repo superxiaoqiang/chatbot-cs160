@@ -45,7 +45,7 @@ class Chatbot(object):
                 print self._response
 
     def set_raw_input(self):
-        self._raw_input = raw_input("> ")
+        self._raw_input = raw_input("\033[1;92mME:\033[1;m ")
 
     def get_raw_input(self):
         return self._raw_input

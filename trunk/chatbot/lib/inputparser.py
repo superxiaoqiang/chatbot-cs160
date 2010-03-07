@@ -15,17 +15,52 @@ import re
 #       These will be returned as a list.
 #   # type (string)
 grammar = [
+    # matches: List the 5 most expensive restaurants in Location Name
     { 'matches': {
       'list': r'.*\blist\b.*',
       'restaurants': r'.*\brestaurants\b.*',
       },
       'semantics': {
-      'count': r'.*([0-9]+).*',
-      'price': r'.*\b(expensive|pricey|cheap|low cost)\b.*',
-      'location': r'.*\bin ([A-Z][a-z]+(( [A-Z][a-z]+)+)?).*',
+      'count': r'.*(?P<term>[0-9]+).*',
+      'price': r'.*\b(?P<term>expensive|pricey|cheap|low cost)\b.*',
+      'location': r'.*\bin (?P<term>[A-Z][a-z]+(([\s,:]+[A-Z][a-z]+)+)?).*',
       },
       'type': 'list',
-    }
+    },
+    # matches: I want to know more about Gilt
+    { 'matches': {
+      'more': r'.*\b(more about|know more)\b.*',
+      'restaurant': r'.+\b(restaurant|[A-Z]+)\b.*',
+      },
+      'semantics': {
+      'restaurant': r'.*\b((more about)|(know more)|(restaurant))\b.+?(?P<term>[A-Z][a-z]+(( [A-Z][a-z]+)+)?).*',
+      },
+      'type': 'single-detail',
+    },
+    # matches: quit
+    { 'matches': {
+      'quit': r'quit.*',
+      },
+      'semantics': {
+      },
+      'type': 'quit',
+    },
+    # matches: Hello
+    { 'matches': {
+      'greeting': r'hi|hello|hey.{0,20}',
+      },
+      'semantics': {
+      },
+      'type': 'greeting',
+    },
+    # matches: Yes
+    { 'matches': {
+      'greeting': r'yes|yeah|sure|ok|go ahead.{0,20}',
+      },
+      'semantics': {
+      },
+      'type': 'confirmation',
+    },
 ]
 
 DEFAULT_RESPONSE = {'type': 'nomatch'}
@@ -66,16 +101,16 @@ class InputParser:
                 if not pattern.match(input):
                     # build the semantics
                     matches = False
-                    # print name
+                    # print 'No match: ' + name
 
             if matches:
                 for name,semantic in item['semantics_compiled'].items():
                     match = semantic.match(input)
                     if not match:
                         matches = False
-                        # print name
+                        # print 'No match: ' + name
                     else:
-                        resp[name] = match.group(1)
+                        resp[name] = match.group('term')
 
             if matches:
                 resp['type'] = item['type']

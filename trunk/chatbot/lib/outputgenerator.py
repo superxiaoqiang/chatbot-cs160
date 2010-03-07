@@ -1,6 +1,37 @@
 # Output manager
 #
 
+import random
+
+RESPONSES = {
+    'quit': (
+        'Thank you for using NYRC, your friendly New York Restaurant Chatbot.',
+        'Thank you, come again!',
+        'Goodbye.',
+        'Good idea, I\'m hungry too!',
+    ),
+    'greeting': (
+        'Hello. How may I help you?',
+        'Hi there, are you looking for a restaurant?',
+        'Let\'s get you some food!',
+        'Hi. My purpose in life is to serve you... a restaurant.',
+        'Hi, would you like my assistance in finding a good meal?',
+    ),
+    'single-detail': (
+        'Would you like more information about {0}?',
+        'Should I tell you more about {0}?',
+        'Interested in knowing more about {0}?',
+        'Sure, I can tell you more about {0}, shall I?',
+        'You want to know more about {0}, is this correct?',
+    ),
+    'confirmation': (
+        'Ok, great.',
+        'I\'m glad to hear that.',
+        'Good.',
+        'Yay!',
+    ),
+}
+
 class OutputGenerator:
     def __init__(self):
         self._init = True
@@ -13,13 +44,17 @@ class OutputGenerator:
         @param input: list to be understood
         @rtype: C{string}
         """
-        
-        if input['type'] == 'list':
-            return input
+        itype = input['type']
+        if itype == 'nomatch':
+            response = "I'm sorry, I don't understand what you mean. Try again."
+        elif itype == 'quit' or itype == 'greeting' or itype == 'confirmation':
+            response = random.choice(RESPONSES[itype])
+        elif itype == 'single-detail':
+            response = random.choice(RESPONSES[itype]).format(input['restaurant'])
         else:
-            return 'NYRC: \033[1;34m' + \
-                "I'm sorry, I don't understand what you mean. Try again." + \
-                '\033[1;m'
+            response = str(input)
+            
+        return '\033[1;34mNYRC:\033[1;m ' + response
 
     def get_intro(self):
         print "Welcome to the NYRC (New York Restaurant Chatbot)"
@@ -27,6 +62,5 @@ class OutputGenerator:
         print "\nTalk to me by typing in plain English, using natural language."
         print "Enter \"quit\" when done.\n"
         print '='*72 + "\n"
-        print 'NYRC: \033[1;34m' + \
-            "Hello.  How may I help you?" + \
-                '\033[1;m'
+        
+        print self.respond({'type': 'greeting'})
