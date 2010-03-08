@@ -100,13 +100,11 @@ class OutputGenerator:
         else:
             response = str(input)
             
-        return '\033[1;34mNYRC:\033[1;m ' + response
+        return response
 
     def get_intro(self):
-        print "\nWelcome to the NYRC (New York Restaurant Chatbot)"
-        print '='*72
-        print "\nTalk to me by typing in plain English, using natural language."
-        print "Enter \"quit\" (or press Ctrl+D) when done.\n"
-        print '='*72 + "\n"
-        
-        print self.respond({'type': 'greeting'})
+        return "\nWelcome to the NYRC (New York Restaurant Chatbot)\n" + \
+            ('='*72) + "\n" + \
+            "\nTalk to me by typing in plain English, using natural language." + \
+            "Enter \"quit\" (or press Ctrl+D) when done.\n\n" + \
+            ('='*72) + "\n"

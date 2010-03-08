@@ -1,5 +1,8 @@
 This readme explains how our chatbot works.
 
+Logs for the dialogs are recorded in the logs/ folder, by timestamp.
+
+========================================================================
 
 The structure of our chatbot program:
 
@@ -31,4 +34,10 @@ lib/
 
         takes in a semantic dictionary and generates output for the bot
 
+    lib/xmlParse.py
+        in: path to XML document
+        out: list of restaurants in dictionary format
+        
+        parses an XML document and builds a dictionary
+        according to set filters
 

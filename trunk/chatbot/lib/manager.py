@@ -3,6 +3,8 @@
 
 from inputparser import *
 from outputgenerator import *
+from datetime import datetime
+import logging
 
 class Chatbot(object):
     def __init__(self):
@@ -16,6 +18,7 @@ class Chatbot(object):
         self._raw_input = ''
         self._input = self._raw_input
         self._response = ''
+        self._DEBUG = False
 
     def start(self, quit="quit"):
         """
@@ -25,6 +28,18 @@ class Chatbot(object):
         @param quit: string to quit on
         @rtype: C{list}
         """
+        LOG_FILENAME = chatbot.get_current_id()
+        logging.basicConfig(filename='logs/'+LOG_FILENAME,level=logging.INFO,format="")
+        print "Dialog Timestamp: " + LOG_FILENAME
+        if self._DEBUG:
+            logging.info("Dialog Timestamp: " + LOG_FILENAME)
+
+        self._input = {'type': 'greeting'}
+        self.respond()
+        self.print_response()
+        if self._DEBUG:
+            logging.info('NYRC: ' + self._response)
+
         self._raw_input = ""
         while self._raw_input != quit:
             self._raw_input = quit
@@ -42,10 +57,14 @@ class Chatbot(object):
                 # do some internal state stuff here
 
                 # output response
-                print self._response
+                self.print_response()
+                if self._DEBUG:
+                    logging.info('NYRC: ' + self._response)
 
     def set_raw_input(self):
         self._raw_input = raw_input("\033[1;92mME:\033[1;m ")
+        if self._DEBUG:
+            logging.info('ME: ' + self._raw_input)
 
     def get_raw_input(self):
         return self._raw_input
@@ -56,12 +75,21 @@ class Chatbot(object):
     def respond(self):
         self._response = self.output_generator.respond(self._input)
 
-    def get_intro(self):
-        self.output_generator.get_intro()
+    def print_response(self):
+        print '\033[1;34mNYRC:\033[1;m ' + self._response
 
+    def get_intro(self):
+        print self.output_generator.get_intro()
+        
+    def get_current_id(self):
+        return str(datetime.now())
+
+    def set_debug(self):
+        self._DEBUG = True
 
 if __name__ == "__main__":
-    
+
     chatbot = Chatbot()
+    chatbot.set_debug()
     chatbot.get_intro()
     chatbot.start()
