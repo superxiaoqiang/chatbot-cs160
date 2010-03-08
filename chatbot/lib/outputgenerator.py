@@ -19,32 +19,32 @@ RESPONSES = {
         'Hi, would you like my assistance in finding a good meal?',
     ),
     'single-detail': (
-        '{0} is located at {1}, and serves {2} cuisine, for {3}. The average cost per person is {4}$. This restaurant also offers: {5}.',
+        '{name} is located at {location}, and serves {cuisine} cuisine, for {meals_served}. The average cost per person is {cost}$. This restaurant also offers: {extras}.',
     ),
     'single-detail-empty': (
-        'Could not find any information about the restaurant {0}.',
-        'We have no record of restaurants named {0}.',
-        'Sorry, no restaurants named {0} are available.',
+        'Could not find any information about the restaurant {name}.',
+        'We have no record of restaurants named {name}.',
+        'Sorry, no restaurants named {name} are available.',
     ),
     'single-detail-confirm': (
-        'Would you like more information about {0}?',
-        'Should I tell you more about {0}?',
-        'Interested in knowing more about {0}?',
-        'Sure, I can tell you more about {0}, shall I?',
-        'You want to know more about {0}, is this correct?',
+        'Would you like more information about {name}?',
+        'Should I tell you more about {name}?',
+        'Interested in knowing more about {name}?',
+        'Sure, I can tell you more about {name}, shall I?',
+        'You want to know more about {name}, is this correct?',
     ),
     'single-cuisine': (
-        'A good {0} restaurant is {1}.',
+        'A good {cuisine} restaurant is {name}.',
     ),
     'single-cuisine-confirm': (
-        'More information about a {0} restaurant.',
-        'Should I tell you a {0} restaurant?',
-        'You want a {0} restaurant, is this correct?',
+        'More information about a {cuisine} restaurant.',
+        'Should I tell you a {cuisine} restaurant?',
+        'You want a {cuisine} restaurant, is this correct?',
     ),
     'single-cuisine-empty': (
-        'Could not find any information about a {0} restaurant.',
-        'We have no record of {0} restaurants.',
-        'Sorry, no {0} restaurants are available.',
+        'Could not find any information about a {cuisine} restaurant.',
+        'We have no record of {cuisine} restaurants.',
+        'Sorry, no {cuisine} restaurants are available.',
     ),
     'confirmation': (
         'Ok, great.',
@@ -77,17 +77,15 @@ class OutputGenerator:
             filters = {'Name': input['restaurant']}
 
             r_list = self._xmlparser.get_restaurants(filters)
-            r = None
-            if r_list:
-                r = r_list[0]
+            r = r_list[0] if r_list else None
             if r:
-                response = random.choice(RESPONSES[itype]).format(r['Name'],
-                    r['Address'] + ', ' + r['Zone'], r['Cuisine'],
-                    r['MealsServed'].lower(), r['Cost'],
-                    r['Field18'].lower() + ', ' + r['Field19'].lower(),
+                response = random.choice(RESPONSES[itype]).format(name=r['Name'],
+                    location=r['Address'] + ', ' + r['Zone'], cuisine=r['Cuisine'],
+                    meals_served=r['MealsServed'].lower(), cost=r['Cost'],
+                    extras=r['Field18'].lower() + ', ' + r['Field19'].lower(),
                 )
             else:
-                response = random.choice(RESPONSES[itype+'-empty']).format(input['restaurant'])
+                response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
         elif itype == 'single-cuisine':
             filters = {'Cuisine': input['cuisine']}
 
@@ -96,9 +94,9 @@ class OutputGenerator:
             if r_list:
                 r_name = random.choice(r_list)['Name']
             if r_name:
-                response = random.choice(RESPONSES[itype]).format(input['cuisine'], r_name)
+                response = random.choice(RESPONSES[itype]).format(cuisine=input['cuisine'], name=r_name)
             else:
-                response = random.choice(RESPONSES[itype+'-empty']).format(input['cuisine'])
+                response = random.choice(RESPONSES[itype+'-empty']).format(cuisine=input['cuisine'])
         else:
             response = str(input)
             

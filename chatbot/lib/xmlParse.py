@@ -18,6 +18,7 @@ class xmlParse:
     def  __init__(self, xml_source):
         if not self.load_xml(xml_source):
             return None
+
         self._rest_array = self._xmldoc.firstChild \
             .getElementsByTagName("Restaurant")
         self.xml_field_names = ["Key", "Name", "Address", "City", "State", "Field6",
