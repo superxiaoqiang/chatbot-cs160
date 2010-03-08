@@ -97,11 +97,9 @@ class InputParser:
         @rtype: C{list}
         """
         
-        # clean up input
-        clean_input = input
-        while clean_input[-1] in "!.":
-            clean_input = clean_input[:-1]
-
+        # removes punctuation from the end of the sentance
+        clean_input = input.rstrip("!.")
+       
         # check grammar
         resp = DEFAULT_RESPONSE.copy()
         for item in grammar:
