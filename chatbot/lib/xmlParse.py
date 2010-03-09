@@ -41,7 +41,7 @@ class xmlParse:
         
     def search_array_string(self,rest_list,field,data_str):
         return [restaurant for restaurant in rest_list
-                if data_str in self.node_string(restaurant,field)]
+                if data_str.lower() in self.node_string(restaurant,field).lower()]
 
     def search_array_range(self,rest_list,field,range_min,range_max):
         return [ restaurant for restaurant

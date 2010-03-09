@@ -2,6 +2,8 @@
 #
 
 import re
+import nltk
+import constants
 
 # grammar has the following format:
 # dict of productions, each has:
@@ -39,11 +41,10 @@ grammar = [
     },
     # matches: What is a good Mexican restaurant?
     { 'matches': {
-      'question': r'(.*\?$)|(^I want.*a good.*restaurant)',
-      'restaurant': r'.+\brestaurant\b.*',
+      'question': r'(.*\?$)|(^.+\ba\b.+\brestaurant)',
       },
       'semantics': {
-      'cuisine': r'.*\b(?P<term>[A-Z][a-z]+(( [A-Z][a-z]+)+)?)\b[\s]+restaurant\b.*',
+      'cuisine': r'.*\b(?P<term>[a-z]+(( [a-z]+)+)?)\b[\s]+restaurant\b.*',
       },
       'type': 'single-cuisine',
     },
@@ -100,6 +101,9 @@ class InputParser:
         # removes punctuation from the end of the sentance
         clean_input = input.rstrip("!.")
        
+        # start with matches = False
+        matches = False
+
         # check grammar
         resp = DEFAULT_RESPONSE.copy()
         for item in grammar:
@@ -124,4 +128,105 @@ class InputParser:
                 resp['type'] = item['type']
                 break
 
+        # use NLP parser as fallback
+        if not matches:
+            resp = self.nlp_parse(input)
+
         return resp
+
+    def nlp_parse(self, input):
+        resp = {}
+        resp['type'] = 'nomatch'
+
+        tagset = self.build_tagset(input)
+
+        resp['words'] = self.build_keywords(tagset)
+
+        if not resp['words']:
+            print resp
+            return resp
+
+        if not resp['words'].get('NN', None):
+            print resp
+            return resp
+
+        for word in resp['words'].get('NN', None):
+            if word.lower() in constants.PHONE_KEYWORDS:
+                r_name = resp['words'].get('NNP', [None])[0] or \
+                         resp['words']['NN'][-1]
+
+                resp['restaurant'] = r_name
+                resp['type'] = 'phone'
+                break
+
+            if word.lower() == 'list':
+                resp['count'] = resp['words'].get('CD', [constants.LIST_DEFAULT_COUNT])[0]
+                resp['type'] = 'list'
+                break
+
+            if word.lower() in constants.NAME_KEYWORDS:
+                r_name = resp['words'].get('NNP', [None])[0]
+                if not r_name:
+                    for kw in reversed(resp['words']['NN']):
+                        if kw not in constants.NAME_KEYWORDS:
+                            r_name = kw
+                            break
+
+                if r_name:
+                    resp['type'] = 'single-detail'
+                    resp['restaurant'] = r_name
+
+        print resp
+        return resp
+
+    def format_keywords(self, keyword):
+        trimmed = []
+
+        # check if word is a DT or PP type and removes it if so
+        if (keyword[0][1][0] == 'D' or
+            keyword[0][1][0] == 'P'):
+            keyword.remove(keyword[0])
+
+        # makes a list of just the strings
+        for (x, y) in keyword:
+            trimmed.append((x, y))
+        return trimmed
+
+    def build_tagset(self, input):
+        # tokenize input
+        tokens = nltk.word_tokenize(input)
+        return nltk.pos_tag(tokens)
+
+    def build_keywords(self, tagset):
+        keywords = {}
+
+        # regexp grammar to catch our keywords
+        #  <DT|PP\$>?: an optional determiner (a,the) or posesive (his, hers).
+        #  <JJ.*>* zero or more adjectives of any type
+        #  <NN.*>+ one or more nouns of any type
+        grammar = r"""
+        # chunk determiner/possessive, adjectives and nouns
+            NP: {<DT|PP\$>?<JJ>*<NN.*>+}
+        # chunk sequences of proper nouns
+            CD: {<CD>}
+        """
+        # parse for keywords
+        regexp_parser = nltk.RegexpParser(grammar)
+        tree = regexp_parser.parse(tagset)
+
+        # walk through the grammar tree and pick out keywords
+        # go for noun phrases first
+        for subtree in tree.subtrees(filter =
+            lambda t: t.node == 'NP' or t.node == 'CD'):
+            keyword = list(subtree.leaves())
+            keyword = self.format_keywords(keyword)
+
+            # append keywords to list
+            for kw in keyword:
+                # initialize, if no list of this type
+                if not keywords.get(kw[1], None):
+                    keywords[kw[1]] = []
+
+                keywords[kw[1]].append(kw[0])
+
+        return keywords
