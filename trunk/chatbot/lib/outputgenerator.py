@@ -18,6 +18,9 @@ RESPONSES = {
         'Hi. My purpose in life is to serve you... a restaurant.',
         'Hi, would you like my assistance in finding a good meal?',
     ),
+    'phone': (
+        'The phone number of {name} is {phone}.',
+    ),
     'single-detail': (
         '{name} is located at {location}, and serves {cuisine} cuisine, for {meals_served}. The average cost per person is {cost}$. This restaurant also offers: {extras}.',
     ),
@@ -73,6 +76,18 @@ class OutputGenerator:
             response = "I'm sorry, I don't understand what you mean. Try again."
         elif itype == 'quit' or itype == 'greeting' or itype == 'confirmation':
             response = random.choice(RESPONSES[itype])
+        elif itype == 'phone':
+            filters = {'Name': input['restaurant']}
+
+            r_list = self._xmlparser.get_restaurants(filters)
+            r = r_list[0] if r_list else None
+            if r:
+                response = random.choice(RESPONSES[itype]).format(
+                    name=r['Name'],
+                    phone=r['Phone'],
+                )
+            else:
+                response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
         elif itype == 'single-detail':
             filters = {'Name': input['restaurant']}
 
@@ -94,9 +109,9 @@ class OutputGenerator:
             if r_list:
                 r_name = random.choice(r_list)['Name']
             if r_name:
-                response = random.choice(RESPONSES[itype]).format(cuisine=input['cuisine'], name=r_name)
+                response = random.choice(RESPONSES[itype]).format(cuisine=input['cuisine'].capitalize(), name=r_name)
             else:
-                response = random.choice(RESPONSES[itype+'-empty']).format(cuisine=input['cuisine'])
+                response = random.choice(RESPONSES[itype+'-empty']).format(cuisine=input['cuisine'].capitalize())
         else:
             response = str(input)
             
