@@ -3,6 +3,7 @@
 
 from inputparser import *
 from outputgenerator import *
+from internalstate import *
 from datetime import datetime
 import logging
 
@@ -14,7 +15,7 @@ class Chatbot(object):
 
         self.input_parser = InputParser()
         self.output_generator = OutputGenerator()
-        # self.internal_state = InternalState()
+        self.internal_state = InternalState()
         self._raw_input = ''
         self._input = self._raw_input
         self._response = ''
@@ -50,11 +51,21 @@ class Chatbot(object):
                 print self.get_raw_input()
 
             if self._raw_input:
+                # prepare the input
+                # according to internal state
+                self.prepare_input()
+
+                # parse the input
                 self.parse_input()
+
+                # process the parsed input
+                # prepare it for output manager
+                self.process_input()
+
                 # get the response
+                # from the output manager
                 self.respond()
 
-                # do some internal state stuff here
 
                 # output response
                 self.print_response()
@@ -72,6 +83,12 @@ class Chatbot(object):
     def parse_input(self):
         self._input = self.input_parser.parse(self._raw_input)
 
+    def prepare_input(self):
+        self._raw_input = self.internal_state.prepare_input(self._raw_input)
+
+    def process_input(self):
+        self._input = self.internal_state.process_input(self._input)
+
     def respond(self):
         self._response = self.output_generator.respond(self._input)
 
@@ -80,7 +97,7 @@ class Chatbot(object):
 
     def get_intro(self):
         print self.output_generator.get_intro()
-        
+
     def get_current_id(self):
         return str(datetime.now())
 

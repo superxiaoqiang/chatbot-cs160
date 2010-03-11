@@ -59,7 +59,6 @@ RESPONSES = {
 
 class OutputGenerator:
     def __init__(self):
-        self._init = True
         self.xml_source = "data/nyc-restaurants.xml"
         self._xmlparser = xmlParse(self.xml_source)
     
