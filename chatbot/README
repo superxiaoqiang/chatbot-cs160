@@ -3,6 +3,11 @@ This readme explains how our chatbot works.
 Table of contents:
 
 1. Requirements
+2. Logs
+3. Program structure
+4. Dialogs -- concepts
+
+1. Requirements
 * Python 2.5.*, 2.6.*
 * NLTK -- http://nltk.org
 * (Optional) For spell checker, hunspell and pyhunspell, for details see:
@@ -10,15 +15,14 @@ Table of contents:
 
 See also requirements.txt
 
+========================================================================
 
 2. Logs
-3. Structure
-4. Dialogs -- concepts
-
 Logs for the dialogs are recorded in the logs/ folder, by timestamp.
 
 ========================================================================
 
+3. Program structure
 The structure of our chatbot program:
 
 (+x) chatbot
@@ -64,8 +68,9 @@ lib/
         parses an XML document and builds a dictionary
         according to set filters
 
+========================================================================
 
-Conversation specs
+4. Conversation specs
 
 * Initial dialogs (blank internal state)
 -> list + (count) +
