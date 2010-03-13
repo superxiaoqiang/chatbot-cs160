@@ -1,5 +1,20 @@
 This readme explains how our chatbot works.
 
+Table of contents:
+
+1. Requirements
+* Python 2.5.*, 2.6.*
+* NLTK -- http://nltk.org
+* (Optional) For spell checker, hunspell and pyhunspell, for details see:
+    http://github.com/pcraciunoiu/didyoumean
+
+See also requirements.txt
+
+
+2. Logs
+3. Structure
+4. Dialogs -- concepts
+
 Logs for the dialogs are recorded in the logs/ folder, by timestamp.
 
 ========================================================================
@@ -22,6 +37,14 @@ lib/
     lib/manager.py
         dialog manager, central piece, running the program starts here
 
+    lib/internalstate.py
+        in: user input, semantic dictionary
+        out: smarter semantic dictionary
+
+        parses user input and makes it better
+        uses some of the previous context to resolve for words such as:
+        that/this/these/it
+
     lib/inputparser.py
         in: user input
         out: semantic dictionary
@@ -40,4 +63,52 @@ lib/
         
         parses an XML document and builds a dictionary
         according to set filters
+
+
+Conversation specs
+
+* Initial dialogs (blank internal state)
+-> list + (count) +
+---> cuisine, zone, city, meals served
+---> price (keywords: expensive, cheap, etc)
+---> price range (sample: "between a and b")
+---> close by (uses google maps to tell lat/long
+---> certain features: "drink" = full bar, "smoke" = smoking permitted,
+     take out, catering, private parties
+
+-> details about A
+---> blank state assumes A == restaurant, asks leading question:
+     "Would you like to look up restaurant A, or did you mean something else?
+    Perhaps cuisine or resutarant area?"
+
+-> specific inquiry about A, can result in a list
+---> A can be anything, keywords:
+     ** "zone A" (or "A zone"), "cuisine A", etc
+---> two or more of these, e.g. expensive + Mexican, or Mahattan + German
+
+-> specific inquiry about restaurant A, single instance
+---> ask about any # of fields for a specific restaurant
+     e.g. "tell me the phone number of (restaurant) A"
+
+
+* Continuing dialogs (depends on previous utterances)
+-> details about list
+---> "Tell me about [my list]" (need keywords)
+---> For a list, this returns some previous filtered characteristics:
+     ** if user has asked for Mexican restaurants, it reminds that
+     ** summary of available price ranges (5 expensive, 10 cheap)
+     ** summary of available zones/cities (2 in manhattan, 1 in brooklyn)
+     ** summary of available meals (5 offer breakfast, 2 lunch, 1 dinner)
+     ** anything else?
+
+-> details about single restaurant, R
+---> "more about R"
+---> lists cuisine, price, etc
+---> asks leading question
+     "Would you like to know more?"
+     "Would you like to see our review for this restaurant?"
+     "Are you worried about needing a reservation?"
+    (some restaurants recommend making a reservation)
+    any other type of question about a field
+---> potentially ask about directions (google maps)
 
