@@ -2,6 +2,7 @@
 #
 import logging
 import re
+import random
 import constants
 from xmlParse import *
 
@@ -76,7 +77,10 @@ class InternalState:
                 elif it[1] == 'cuisine':
                     filters = {'Cuisine': input['cuisine']}
 
-                input['list'] = self._xmlparser.get_restaurants(filters)
+                r_list = self._xmlparser.get_restaurants(filters)
+                if r_list:
+                    random.shuffle(r_list)
+                    input['list'] = [r_list[0]]
 
             # update the stack with
             if constants.DEBUG:
