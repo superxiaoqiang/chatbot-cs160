@@ -95,9 +95,10 @@ class InputParser:
             if word.lower() in constants.PHONE_KEYWORDS:
                 r_name = resp['words'].get('NNP', [None])[0] or \
                          resp['words']['NN'][-1]
-
+              
                 resp['restaurant'] = r_name
                 resp['type'] = 'phone'
+                
                 break
 
             # matches a request for a list
@@ -105,7 +106,15 @@ class InputParser:
                 resp['count'] = resp['words'].get('CD', [constants.LIST_DEFAULT_COUNT])[0]
                 resp['type'] = 'list'
                 break 
-
+                
+            #matches a request for an address    
+            if word.lower() == 'address':
+                r_name = resp['words'].get('NNP', [None])[0] or \
+                         resp['words']['NN'][-1]
+                resp['restaurant'] = r_name
+                resp['type'] = 'location'
+                break
+                
             # matches a request for a cuisine type
             if word.lower() in constants.NAME_KEYWORDS:
                 r_name = resp['words'].get('NNP', [None])[0]

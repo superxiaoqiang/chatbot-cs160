@@ -22,6 +22,14 @@ class OutputGenerator:
         itype = input['type']
         if itype == 'nomatch':
             response = random.choice(RESPONSES[itype])
+        elif itype == 'location':
+            if input['list']:
+                response = random.choice(RESPONSES[itype]).format(
+                    name=input['list'][0]['Name'],
+                    location=input['list'][0]['Address'],
+                )    
+            else:
+                response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])        
         elif itype == 'quit' or itype == 'greeting' or itype == 'confirmation':
             response = random.choice(RESPONSES[itype])
         elif itype == 'phone':
@@ -56,6 +64,7 @@ class OutputGenerator:
                 )
             else:
                 response = random.choice(RESPONSES[itype+'-empty']).format(cuisine=input['cuisine'].capitalize())
+        
         else:
             response = str(input)
 
