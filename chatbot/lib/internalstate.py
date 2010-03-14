@@ -56,9 +56,9 @@ class InternalState:
                     item = self.peek_stack(-2)
 
                     # stop if no more items on stack
-                    it = item['input']['type'].split('-')
                     log.debug('Previously: {it}'.format(it=it))
-                    if it[0] == 'leading' and it[1] == 'single':
+                    if item['input']['type'] == 'leading-single' \
+                        or item['input']['type'] == 'single-detail':
                         input['type'] = 'single-detail'
                         it = input['type'].split('-')
                         input['restaurant'] = item['input']['restaurant']
