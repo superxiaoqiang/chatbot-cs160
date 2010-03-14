@@ -22,9 +22,17 @@ class Chatbot(cmd.Cmd):
     def start(self):
         intro = self.output_generator.get_intro() + "\n" +\
             self._response(self.output_generator.respond({'type': 'greeting'}))
+        
+        LOG_FILENAME = str(datetime.now())
+        logging.basicConfig(filename='logs/'+LOG_FILENAME,level=logging.DEBUG,format="")
+        logging.info( "Dialog Timestamp: " + LOG_FILENAME)
+        
         self.cmdloop(intro)
 
     def default(self, line):
+        
+        logging.debug('ME: ' + line)
+
         # prepare_input
         self.internal_state.prepare_input(line)
         # parse the input
@@ -38,6 +46,8 @@ class Chatbot(cmd.Cmd):
         # output response
 
         print self._response(response)
+        logging.debug('NYRC: ' + response)
+
 
     def do_help(self, cmd):
         print self.output_generator.get_intro()
