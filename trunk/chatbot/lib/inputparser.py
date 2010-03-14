@@ -53,14 +53,15 @@ class InputParser:
         input_s = self.spellcheck(input)
 
         resp = self.check_grammar(input)
-        if constants.SPELLCHECK and not resp:
+        if constants.SPELLCHECK and not resp and input_s['full'] != input:
             resp = self.check_grammar(input_s['full'])
 
         # use NLP parser as fallback
         if not resp:
             resp = self.nlp_parse(input)
 
-        if constants.SPELLCHECK and resp['type'] == 'nomatch':
+        if constants.SPELLCHECK and resp['type'] == 'nomatch' \
+            and input_s['full'] != input:
             resp = self.nlp_parse(input_s['full'])
 
         return resp
@@ -71,7 +72,6 @@ class InputParser:
         resp['type'] = 'nomatch'
 
         tagset = self.build_tagset(input)
-        log.debug('Tagset: ' + str(tagset))
         resp['words'] = self.build_keywords(tagset)
 
 
@@ -81,7 +81,6 @@ class InputParser:
 
         if not resp['words'].get('NN', None):
             log.debug("No NN: " + str(resp))
-            log.debug(resp)
             return resp
 
         for word in resp['words'].get('NN', None):
@@ -235,10 +234,8 @@ class InputParser:
                 break
 
         if matches:
-            log.debug('For input: ' + input)
-            log.debug('Matched grammar: ' + str(resp))
+            log.debug(input + ' -- ' + str(resp))
             return resp
         else:
-            log.debug('For input: ' + input)
-            log.debug('No match: ' + str(resp))
+            log.debug(input + ' -- ' + str(False))
             return False

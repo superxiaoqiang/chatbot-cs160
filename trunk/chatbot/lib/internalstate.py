@@ -2,19 +2,22 @@
 #
 import logging
 import constants
+from xmlParse import *
 
-log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-formatter = logging.Formatter(constants.colors.DEBUG 
-    + "%(name)s - %(message)s" + constants.colors.END)
+if constants.DEBUG:
+    log = logging.getLogger(__name__)
+    log.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler()
+    formatter = logging.Formatter(constants.colors.DEBUG 
+        + "%(name)s - %(message)s" + constants.colors.END)
 
-ch.setFormatter(formatter)
-log.addHandler(ch)
+    ch.setFormatter(formatter)
+    log.addHandler(ch)
 
 class InternalState:
     def __init__(self):
         self.stack = []
+        self._xmlparser = xmlParse(constants.XML_SOURCE)
 
     def prepare_input(self, raw_input):
         """Prepare raw input"""
@@ -28,8 +31,30 @@ class InternalState:
         top = self.peek_stack()
         if top:
             top['input'] = input
-        # update the stack with
-        log.debug(self.stack)
+            it = input['type'].split('-')
+            print it
+            input['list'] = []
+
+            if it[0] == 'single':
+                filters = []
+
+                if it[1] == 'detail' \
+                  or it[1] == 'phone':
+                    filters = {'Name': input['restaurant']}
+
+                elif it[1] == 'cuisine':
+                    filters = {'Cuisine': input['cuisine']}
+
+                input['list'] = self._xmlparser.get_restaurants(filters)
+
+            # update the stack with
+            if constants.DEBUG:
+                log.debug(
+                    'just added: {type}; n: {n}'.format(
+                        type=input['type'],
+                        n=len(input['list']),
+                        )
+                    )
 
         return input
 
