@@ -2,6 +2,7 @@
 #
 
 import random
+import re
 from xmlParse import *
 
 RESPONSES = {
@@ -61,7 +62,7 @@ class OutputGenerator:
     def __init__(self):
         self.xml_source = "data/nyc-restaurants.xml"
         self._xmlparser = xmlParse(self.xml_source)
-    
+        self._istate_response= {}
     def respond(self, input, filters={}):
         """
         Respond to semantic input.
@@ -98,6 +99,8 @@ class OutputGenerator:
                     meals_served=r['MealsServed'].lower(), cost=r['Cost'],
                     extras=r['Field18'].lower() + ', ' + r['Field19'].lower(),
                 )
+                x = re.split(r' is located', response)
+                self._istate_response = {'type': 'single-detail', 'restaurant': x[0]}
             else:
                 response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
         elif itype == 'single-cuisine':
