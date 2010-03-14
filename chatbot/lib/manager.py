@@ -5,7 +5,7 @@ from inputparser import *
 from outputgenerator import *
 from datetime import datetime
 from internalstate import * 
-import constants_local as constants
+import constants
 import logging
 import cmd
 import sys

@@ -5,7 +5,7 @@ import re
 import logging
 
 import nltk
-import constants_local as constants
+import constants
 from grammar import grammar
 if constants.SPELLCHECK:
     from didyoumean import DidYouMean
