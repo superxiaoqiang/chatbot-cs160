@@ -1,4 +1,5 @@
 # constants defined here
+import re
 
 LIST_DEFAULT_COUNT = 5
 
@@ -9,3 +10,15 @@ PHONE_KEYWORDS = set(['phone'])
 
 SPELLCHECK = 0
 DICT_DIR = '/usr/share/myspell/dicts/'
+
+DEBUG = True
+
+DEFAULT_RESPONSE = {'type': 'nomatch'}
+
+CAPITAL_REGEX = re.compile('^[A-Z].*', re.MULTILINE)
+
+class colors:
+    NYRC = '\033[94m'
+    ME = '\033[92m'
+    DEBUG = '\033[91m'
+    END = '\033[0m'

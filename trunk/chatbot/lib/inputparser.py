@@ -2,94 +2,27 @@
 #
 
 import re
+import logging
+
 import nltk
-import constants
+import constants_local as constants
+from grammar import grammar
 if constants.SPELLCHECK:
     from didyoumean import DidYouMean
-import logging
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
-formatter = logging.Formatter(
-    "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter(constants.colors.DEBUG 
+    + "%(name)s - %(message)s" + constants.colors.END)
 
 ch.setFormatter(formatter)
 log.addHandler(ch)
 
-# grammar has the following format:
-# dict of productions, each has:
-#   # matches
-#       a dict of matches name -> pattern(string regex)
-#       compiled using IGNORECASE
-#   # semantics
-#       similar to matches
-#       compiled without IGNORECASE
-#       
-#       These will be returned as a list.
-#   # type (string)
-grammar = [
-    # matches: List the 5 most expensive restaurants in Location Name
-    { 'matches': {
-      'list': r'.*\blist\b.*',
-      'restaurants': r'.*\brestaurants\b.*',
-      },
-      'semantics': {
-      'count': r'.*(?P<term>[0-9]+).*',
-      'price': r'.*\b(?P<term>expensive|pricey|cheap|low cost)\b.*',
-      'location': r'.*\bin (?P<term>[A-Z][a-z]+(([\s,:]+[A-Z][a-z]+)+)?)\b.*',
-      },
-      'type': 'list',
-    },
-    # matches: I want to know more about Gilt
-    { 'matches': {
-      'more': r'.*\b(more about|know more)\b.*',
-      'restaurant': r'.+\b(restaurant|[A-Z]+)\b.*',
-      },
-      'semantics': {
-      'restaurant': r'.*\b((more about)|(know more)|(restaurant))\b.+?(?P<term>[A-Z][a-z]+(([\s,:]+[A-Z][a-z]+)+)?)\b.*',
-      },
-      'type': 'single-detail',
-    },
-    # matches: What is a good Mexican restaurant?
-    { 'matches': {
-      'question': r'(.*\?$)|(^.+\ba\b.+\brestaurant)',
-      },
-      'semantics': {
-      'cuisine': r'.*\b(?P<term>[a-z]+(( [a-z]+)+)?)\b[\s]+restaurant\b.*',
-      },
-      'type': 'single-cuisine',
-    },
-    # matches: quit
-    { 'matches': {
-      'quit': r'quit.*',
-      },
-      'semantics': {
-      },
-      'type': 'quit',
-    },
-    # matches: Hello
-    { 'matches': {
-      'greeting': r'hi|hello|hey.{0,20}',
-      },
-      'semantics': {
-      },
-      'type': 'greeting',
-    },
-    # matches: Yes
-    { 'matches': {
-      'greeting': r'yes|yeah|sure|ok|go ahead|sounds good.{0,20}',
-      },
-      'semantics': {
-      },
-      'type': 'confirmation',
-    },
-]
-
-DEFAULT_RESPONSE = {'type': 'nomatch'}
 
 class InputParser:
     def __init__(self):
+        """Compile the regexes in grammar"""
         for item in grammar:
             item['matches_compiled'] = {}
             for name,pattern in item['matches'].items():
@@ -100,74 +33,61 @@ class InputParser:
             for name,pattern in item['semantics'].items():
                 item['semantics_compiled'][name] = \
                     re.compile(pattern)
-    
+
+        if constants.SPELLCHECK:
+            self.didyoumean = DidYouMean('en-us', constants.DICT_DIR)
+
     def parse(self, input):
         """
         Parse user input.
-        
+
         @type input: C{string}
         @param input: string to be parsed
         @rtype: C{list}
         """
-        
+
         # removes punctuation from the end of the sentance
-        clean_input = input.rstrip("!.")
-       
-        # start with matches = False
-        matches = False
+        clean_input = input.strip(" !@#$%^&*()_+-=[]\\`~{}|;':\",./<>?")
 
         # check grammar
-        resp = DEFAULT_RESPONSE.copy()
-        for item in grammar:
-            # check all matches
-            matches = True
-            for name,pattern in item['matches_compiled'].items():
-                if not pattern.match(input):
-                    # build the semantics
-                    matches = False
-                    log.debug(  'No match: ' + name)
+        input_s = self.spellcheck(input)
 
-            if matches:
-                for name,semantic in item['semantics_compiled'].items():
-                    match = semantic.match(input)
-                    if not match:
-                        matches = False
-                        log.debug( 'No match: ' + name)
-                    else:
-                        resp[name] = match.group('term')
-
-            if matches:
-                resp['type'] = item['type']
-                break
+        resp = self.check_grammar(input)
+        if constants.SPELLCHECK and not resp:
+            resp = self.check_grammar(input_s['full'])
 
         # use NLP parser as fallback
-        if not matches:
+        if not resp:
             resp = self.nlp_parse(input)
+
+        if constants.SPELLCHECK and resp['type'] == 'nomatch':
+            resp = self.nlp_parse(input_s['full'])
 
         return resp
 
     def nlp_parse(self, input):
+        """Parse input using NLTK parser+chunker"""
         resp = {}
         resp['type'] = 'nomatch'
-      
+
         tagset = self.build_tagset(input)
-        print tagset
+        log.debug('Tagset: ' + str(tagset))
         resp['words'] = self.build_keywords(tagset)
 
-        
+
         if not resp['words']:
-            print "no words: %s" % resp
+            log.debug("No words: " + resp)
             return resp
 
         if not resp['words'].get('NN', None):
-            print "No NN: %s" % resp
-            print resp
+            log.debug("No NN: %s" + resp)
+            log.debug(resp)
             return resp
 
         for word in resp['words'].get('NN', None):
-            print "NN found: %s" % word 
-			
-			#matchs a phone number request
+            log.debug("NN found: " + word)
+
+            # matches a phone number request
             if word.lower() in constants.PHONE_KEYWORDS:
                 r_name = resp['words'].get('NNP', [None])[0] or \
                          resp['words']['NN'][-1]
@@ -175,14 +95,14 @@ class InputParser:
                 resp['restaurant'] = r_name
                 resp['type'] = 'phone'
                 break
-				
-			# matches a request for a list
+
+            # matches a request for a list
             if word.lower() == 'list':
                 resp['count'] = resp['words'].get('CD', [constants.LIST_DEFAULT_COUNT])[0]
                 resp['type'] = 'list'
                 break 
-				
-            #matches a request for a restaurant name
+
+            # matches a request for a restaurant name
             if word.lower() in constants.NAME_KEYWORDS:
                 r_name = resp['words'].get('NNP', [None])[0]
                 if not r_name:
@@ -211,6 +131,41 @@ class InputParser:
             trimmed.append((x, y))
         return trimmed
 
+    def spellcheck(self, input):
+        # check if enabled
+        if not constants.SPELLCHECK:
+            return input
+
+        words = [(w.new, w.corrected, w.old)
+            for w in self.didyoumean.suggest(input)]
+
+        full = []
+        old = []
+        new = []
+        for w in words:
+            # exclude capitalized words
+            # since they are assumed to be proper nouns
+            if w[1] and not constants.CAPITAL_REGEX.match(w[2]):
+                new.append(w[0])
+                full.append(w[0])
+            elif not constants.CAPITAL_REGEX.match(w[2]):
+                # but add correctly capitalized words
+                if w[0] != w[2]:
+                    new.append(w[0])
+                    full.append(w[0])
+                else:
+                    old.append(w[2])
+                    full.append(w[2])
+
+            else:
+                old.append(w[2])
+                full.append(w[2])
+        return {
+            'full': u' '.join(full),
+            'new': new,
+            'old': old,
+        }
+
     def build_tagset(self, input):
         # tokenize input
         tokens = nltk.word_tokenize(input)
@@ -228,15 +183,18 @@ class InputParser:
             NP: {<DT|PP\$>?<JJ>*<NN.*>+}
         # chunk sequences of proper nouns
             CD: {<CD>}
+        # chunk adjectives
+            JJ: {<JJ.*>}
         """
         # parse for keywords
         regexp_parser = nltk.RegexpParser(grammar)
         tree = regexp_parser.parse(tagset)
-
+        log.debug('Tree: ' + str(tree))
         # walk through the grammar tree and pick out keywords
         # go for noun phrases first
         for subtree in tree.subtrees(filter =
-            lambda t: t.node == 'NP' or t.node == 'CD'):
+            lambda t: t.node == 'NP' or t.node == 'CD' \
+                or t.node == 'JJ'):
             keyword = list(subtree.leaves())
             keyword = self.format_keywords(keyword)
 
@@ -249,3 +207,38 @@ class InputParser:
                 keywords[kw[1]].append(kw[0])
 
         return keywords
+
+    def check_grammar(self, input):
+        resp = constants.DEFAULT_RESPONSE.copy()
+
+        # start with matches = False
+        matches = False
+
+        for item in grammar:
+            # check all matches
+            matches = True
+            for name, pattern in item['matches_compiled'].items():
+                if not pattern.match(input):
+                    # build the semantics
+                    matches = False
+
+            if matches:
+                for name, semantic in item['semantics_compiled'].items():
+                    match = semantic.match(input)
+                    if not match:
+                        matches = False
+                    else:
+                        resp[name] = match.group('term')
+
+            if matches:
+                resp['type'] = item['type']
+                break
+
+        if matches:
+            log.debug('For input: ' + input)
+            log.debug('Matched grammar: ' + str(resp))
+            return resp
+        else:
+            log.debug('For input: ' + input)
+            log.debug('No match: ' + str(resp))
+            return False
