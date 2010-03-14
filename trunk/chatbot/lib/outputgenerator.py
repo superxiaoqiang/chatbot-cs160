@@ -37,11 +37,12 @@ class OutputGenerator:
                 response = random.choice(RESPONSES[itype]).format(
                     name=input['list'][0]['Name'],
                     location=input['list'][0]['Address'],
-                    cuisine=input['list'][0]['Zone'],
-                    meals_served=input['list'][0]['Cuisine'],
-                    cost=input['list'][0]['MealsServed'],
-                    extras=input['list'][0]['Cost'].lower() + ', ' + \
-                        input['list'][0]['Field18'].lower(),
+                    zone=input['list'][0]['Zone'],
+                    cuisine=input['list'][0]['Cuisine'],
+                    meals_served=input['list'][0]['MealsServed'],
+                    cost=input['list'][0]['Cost'],
+                    extras=input['list'][0]['Field18'].lower() + ', ' + \
+                        input['list'][0]['Field19'].lower(),
                 )
             else:
                 response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
