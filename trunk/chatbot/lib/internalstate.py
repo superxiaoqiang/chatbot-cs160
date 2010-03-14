@@ -24,7 +24,7 @@ class InternalState:
 
     def prepare_input(self, raw_input):
         """Prepare raw input"""
-
+        new = {}
         # check current input for "it" and replace with restaurant name
         # look behind three lines
         p = re.compile(r'\bit\b', re.IGNORECASE)
@@ -36,11 +36,15 @@ class InternalState:
                 if not item:
                     break
                 raw_input = p.sub(item['input']['list'][0]['Name'], raw_input)
+
+                # mark that context is added
+                new['internal'] = True
             except:
                 pass
 
+        new['raw_input'] = raw_input
         # push raw input to stack
-        self.push_stack({'raw_input': raw_input})
+        self.push_stack(new)
         return raw_input
 
     def process_input(self, input):
@@ -66,6 +70,11 @@ class InternalState:
                 except:
                     pass
 
+            # if it already has context, skip confirmation step
+            if top.get('internal', None) and \
+                it[0] == 'leading' and it[1] == 'single':
+                input['type'] = 'single-detail'
+                it = input['type'].split('-')
 
             if it[0] == 'single':
                 filters = []
