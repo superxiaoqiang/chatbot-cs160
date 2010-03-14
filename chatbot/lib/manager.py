@@ -34,9 +34,9 @@ class Chatbot(cmd.Cmd):
         logging.debug('ME: ' + line)
 
         # prepare_input
-        self.internal_state.prepare_input(line)
+        prepared = self.internal_state.prepare_input(line)
         # parse the input
-        input = self.input_parser.parse(line)
+        input = self.input_parser.parse(prepared)
 
         # process the parsed input
         # prepare it for output manager

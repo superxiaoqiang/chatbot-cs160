@@ -24,11 +24,10 @@ grammar = [
     },
     # matches: I want to know more about Gilt
     { 'matches': {
-      'more': r'.*\b(more about|know more)\b.*',
-      'restaurant': r'.+\b(restaurant)\b.*',
+      'more': r'.*\b(know more about)|(tell .* more about)\b.*',
       },
       'semantics': {
-      'restaurant': r'.*\b((more about)|(know more)|(restaurant))\b.+?(?P<term>[A-Z][a-z]+(([\s,:]+[A-Z][a-z]+)+)?)\b.*',
+      'restaurant': r'.+?\b(?P<term>[A-Z][a-z]+(([\s,:]+[A-Z][a-z]+)+)?)\b.*',
       },
       'type': 'single-detail',
     },
