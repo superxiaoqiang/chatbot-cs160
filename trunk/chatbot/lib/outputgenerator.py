@@ -32,6 +32,8 @@ class OutputGenerator:
                 )
             else:
                 response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
+        elif itype == 'leading-single':
+            response = random.choice(RESPONSES[itype]).format(name=input['restaurant'])
         elif itype == 'single-detail':
             if input['list']:
                 response = random.choice(RESPONSES[itype]).format(

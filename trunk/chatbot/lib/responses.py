@@ -17,6 +17,9 @@ RESPONSES = {
     'phone': (
         'The phone number of {name} is {phone}.',
     ),
+    'leading-single': (
+        'Is {name} a restaurant? You may respond by saying yes. If not, perhaps {name} is a type of cuisine or a city?',
+    ),
     'single-detail': (
         '{name} is located at {location}, and serves {cuisine} cuisine, for {meals_served}. The average cost per person is {cost}$. This restaurant also offers: {extras}.',
     ),
