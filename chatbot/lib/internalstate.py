@@ -1,5 +1,16 @@
 # Internal state manager
 #
+import logging
+import constants_local as constants
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+formatter = logging.Formatter(constants.colors.DEBUG 
+    + "%(name)s - %(message)s" + constants.colors.END)
+
+ch.setFormatter(formatter)
+log.addHandler(ch)
 
 class InternalState:
     def __init__(self):
@@ -14,9 +25,11 @@ class InternalState:
 
     def process_input(self, input):
         """Process parsed input"""
-        self.peek_stack()['input'] = input
+        top = self.peek_stack()
+        if top:
+            top['input'] = input
         # update the stack with
-        print self.stack
+        log.debug(self.stack)
 
         return input
 
@@ -36,4 +49,8 @@ class InternalState:
         
         If count is not specified, returns the last element
         """
-        return self.stack[count]
+        try:
+            return self.stack[count]
+        except IndexError:
+            log.debug('IndexError: peek_stack(' + str(count) + ')')
+            return False

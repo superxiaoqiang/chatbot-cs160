@@ -13,6 +13,11 @@ Table of contents:
 * (Optional) For spell checker, hunspell and pyhunspell, for details see:
     http://github.com/pcraciunoiu/didyoumean
 
+To install pyhunspell, you can run:
+pip install -r requirements.txt
+
+You'll need to install pip first. On Ubuntu this package is called python-pip.
+
 See also requirements.txt
 
 ========================================================================
