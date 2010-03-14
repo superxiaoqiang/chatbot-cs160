@@ -4,6 +4,18 @@
 import re
 import nltk
 import constants
+import logging
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+ch.setFormatter(formatter)
+log.addHandler(ch)
+
+
 
 # grammar has the following format:
 # dict of productions, each has:
@@ -113,14 +125,14 @@ class InputParser:
                 if not pattern.match(input):
                     # build the semantics
                     matches = False
-                    # print 'No match: ' + name
+                    log.debug(  'No match: ' + name)
 
             if matches:
                 for name,semantic in item['semantics_compiled'].items():
                     match = semantic.match(input)
                     if not match:
                         matches = False
-                        # print 'No match: ' + name
+                        log.debug( 'No match: ' + name)
                     else:
                         resp[name] = match.group('term')
 
@@ -143,11 +155,11 @@ class InputParser:
         resp['words'] = self.build_keywords(tagset)
 
         if not resp['words']:
-            print resp
+            log.debug( resp)
             return resp
 
         if not resp['words'].get('NN', None):
-            print resp
+            log.debug( resp)
             return resp
 
         for word in resp['words'].get('NN', None):
@@ -176,7 +188,7 @@ class InputParser:
                     resp['type'] = 'single-detail'
                     resp['restaurant'] = r_name
 
-        print resp
+        log.debug( resp)
         return resp
 
     def format_keywords(self, keyword):
