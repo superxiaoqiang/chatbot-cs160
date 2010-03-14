@@ -4,8 +4,6 @@
 import re
 import nltk
 import constants
-if constants.SPELLCHECK:
-    from didyoumean import DidYouMean
 
 # grammar has the following format:
 # dict of productions, each has:
@@ -34,7 +32,7 @@ grammar = [
     # matches: I want to know more about Gilt
     { 'matches': {
       'more': r'.*\b(more about|know more)\b.*',
-      'restaurant': r'.+\b(restaurant)\b.*',
+      'restaurant': r'.+\b(restaurant|[A-Z]+)\b.*',
       },
       'semantics': {
       'restaurant': r'.*\b((more about)|(know more)|(restaurant))\b.+?(?P<term>[A-Z][a-z]+(([\s,:]+[A-Z][a-z]+)+)?)\b.*',
@@ -76,9 +74,6 @@ grammar = [
     },
 ]
 
-capital_regex = re.compile('^[A-Z].*', re.MULTILINE)
-
-
 DEFAULT_RESPONSE = {'type': 'nomatch'}
 
 class InputParser:
@@ -93,10 +88,7 @@ class InputParser:
             for name,pattern in item['semantics'].items():
                 item['semantics_compiled'][name] = \
                     re.compile(pattern)
-
-        if constants.SPELLCHECK:
-            self.didyoumean = DidYouMean('en-us', constants.DICT_DIR)
-
+    
     def parse(self, input):
         """
         Parse user input.
@@ -107,26 +99,42 @@ class InputParser:
         """
         
         # removes punctuation from the end of the sentance
-        clean_input = input.strip(" !@#$%^&*()_+-=[]\\`~{}|;':\",./<>?")
+        clean_input = input.rstrip("!.")
        
-        # check grammar
-        input_s = self.spellcheck(input)
+        # start with matches = False
+        matches = False
 
-        resp = self.check_grammar(input)
-        if constants.SPELLCHECK and not resp:
-            resp = self.check_grammar(input_s['full'])
+        # check grammar
+        resp = DEFAULT_RESPONSE.copy()
+        for item in grammar:
+            # check all matches
+            matches = True
+            for name,pattern in item['matches_compiled'].items():
+                if not pattern.match(input):
+                    # build the semantics
+                    matches = False
+                    # print 'No match: ' + name
+
+            if matches:
+                for name,semantic in item['semantics_compiled'].items():
+                    match = semantic.match(input)
+                    if not match:
+                        matches = False
+                        # print 'No match: ' + name
+                    else:
+                        resp[name] = match.group('term')
+
+            if matches:
+                resp['type'] = item['type']
+                break
 
         # use NLP parser as fallback
-        if not resp:
+        if not matches:
             resp = self.nlp_parse(input)
-
-        if constants.SPELLCHECK and resp['type'] == 'nomatch':
-            resp = self.nlp_parse(input_s['full'])
 
         return resp
 
     def nlp_parse(self, input):
-        print 'For: ' + input
         resp = {}
         resp['type'] = 'nomatch'
 
@@ -135,11 +143,11 @@ class InputParser:
         resp['words'] = self.build_keywords(tagset)
 
         if not resp['words']:
-            print 'Resp: ' + str(resp)
+            print resp
             return resp
 
         if not resp['words'].get('NN', None):
-            print 'Resp: ' + str(resp)
+            print resp
             return resp
 
         for word in resp['words'].get('NN', None):
@@ -168,7 +176,7 @@ class InputParser:
                     resp['type'] = 'single-detail'
                     resp['restaurant'] = r_name
 
-        print 'Resp: ' + str(resp)
+        print resp
         return resp
 
     def format_keywords(self, keyword):
@@ -183,41 +191,6 @@ class InputParser:
         for (x, y) in keyword:
             trimmed.append((x, y))
         return trimmed
-
-    def spellcheck(self, input):
-        # check if enabled
-        if not constants.SPELLCHECK:
-            return input
-
-        words = [(w.new, w.corrected, w.old)
-            for w in self.didyoumean.suggest(input)]
-
-        full = []
-        old = []
-        new = []
-        for w in words:
-            # exclude capitalized words
-            # since they are assumed to be proper nouns
-            if w[1] and not capital_regex.match(w[2]):
-                new.append(w[0])
-                full.append(w[0])
-            elif not capital_regex.match(w[2]):
-                # but add correctly capitalized words
-                if w[0] != w[2]:
-                    new.append(w[0])
-                    full.append(w[0])
-                else:
-                    old.append(w[2])
-                    full.append(w[2])
-
-            else:
-                old.append(w[2])
-                full.append(w[2])
-        return {
-            'full': u' '.join(full),
-            'new': new,
-            'old': old,
-        }
 
     def build_tagset(self, input):
         # tokenize input
@@ -236,18 +209,15 @@ class InputParser:
             NP: {<DT|PP\$>?<JJ>*<NN.*>+}
         # chunk sequences of proper nouns
             CD: {<CD>}
-        # chunk adjectives
-            JJ: {<JJ.*>}
         """
         # parse for keywords
         regexp_parser = nltk.RegexpParser(grammar)
         tree = regexp_parser.parse(tagset)
-        print 'Tree: ' + str(tree)
+
         # walk through the grammar tree and pick out keywords
         # go for noun phrases first
         for subtree in tree.subtrees(filter =
-            lambda t: t.node == 'NP' or t.node == 'CD' \
-                or t.node == 'JJ'):
+            lambda t: t.node == 'NP' or t.node == 'CD'):
             keyword = list(subtree.leaves())
             keyword = self.format_keywords(keyword)
 
@@ -260,36 +230,3 @@ class InputParser:
                 keywords[kw[1]].append(kw[0])
 
         return keywords
-
-    def check_grammar(self, input):
-        resp = DEFAULT_RESPONSE.copy()
-
-        # start with matches = False
-        matches = False
-
-        for item in grammar:
-            # check all matches
-            matches = True
-            for name, pattern in item['matches_compiled'].items():
-                if not pattern.match(input):
-                    # build the semantics
-                    matches = False
-                    # print 'No match: ' + name
-
-            if matches:
-                for name, semantic in item['semantics_compiled'].items():
-                    match = semantic.match(input)
-                    if not match:
-                        matches = False
-                        # print 'No match: ' + name
-                    else:
-                        resp[name] = match.group('term')
-
-            if matches:
-                resp['type'] = item['type']
-                break
-
-        if matches:
-            return resp
-        else:
-            return False

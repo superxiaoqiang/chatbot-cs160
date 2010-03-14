@@ -20,7 +20,6 @@ class Chatbot(object):
         self._input = self._raw_input
         self._response = ''
         self._DEBUG = False
-
     def start(self, quit="quit"):
         """
         Starts the chatbot
@@ -53,7 +52,7 @@ class Chatbot(object):
             if self._raw_input:
                 # prepare the input
                 # according to internal state
-                self.prepare_input()
+                #self.prepare_input()
 
                 # parse the input
                 self.parse_input()
@@ -61,12 +60,20 @@ class Chatbot(object):
                 # process the parsed input
                 # prepare it for output manager
                 self.process_input()
-
+	#	print "$$$$$$$"
+        #       print self._input
+        #       print "*****"
+        #       print self._raw_input
                 # get the response
                 # from the output manager
                 self.respond()
-
-
+                if len(self.output_generator._istate_response) >0:
+                    self.internal_state.pop_stack(-1)
+                    self.internal_state.push_stack(self.output_generator._istate_response)
+                    self.output_generator._istate_response = {}
+            
+                print "stack size is: " + str(len(self.internal_state.stack))
+                print "the stack is currently:" + str(self.internal_state.stack)
                 # output response
                 self.print_response()
                 if self._DEBUG:

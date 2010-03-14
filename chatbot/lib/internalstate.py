@@ -1,22 +1,26 @@
 # Internal state manager
 #
+import re
 
 class InternalState:
     def __init__(self):
         self.stack = []
+#        print self._xmlparser.get_restaurants({})
 
     def prepare_input(self, raw_input):
         """Prepare raw input"""
 
         # push raw input to stack
-        self.push_stack({'raw_input': raw_input})
         return raw_input
-
+   
     def process_input(self, input):
         """Process parsed input"""
-        self.peek_stack()['input'] = input
+        if len(self.stack) > 0:
+            self.peek_stack()['input'] = input
         # update the stack with
-        print self.stack
+        if input['type'] is not 'greeting' and input['type'] is not 'nomatch' and \
+        input['type'] is not 'confirmation' and input['type'] is not 'quit':
+            self.push_stack(input)
 
         return input
 
@@ -25,7 +29,8 @@ class InternalState:
 
     def pop_stack(self, count=None):
         """Pop from stack"""
-        self.stack.pop(count)
+        if len(self.stack) > 0:
+            self.stack.pop(count)
 
     def push_stack(self, element):
         """Push to stack"""
