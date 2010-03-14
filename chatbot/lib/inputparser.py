@@ -139,20 +139,25 @@ class InputParser:
     def nlp_parse(self, input):
         resp = {}
         resp['type'] = 'nomatch'
-
+      
         tagset = self.build_tagset(input)
-
+        print tagset
         resp['words'] = self.build_keywords(tagset)
 
+        
         if not resp['words']:
-            print resp
+            print "no words: %s" % resp
             return resp
 
         if not resp['words'].get('NN', None):
+            print "No NN: %s" % resp
             print resp
             return resp
 
         for word in resp['words'].get('NN', None):
+            print "NN found: %s" % word 
+			
+			#matchs a phone number request
             if word.lower() in constants.PHONE_KEYWORDS:
                 r_name = resp['words'].get('NNP', [None])[0] or \
                          resp['words']['NN'][-1]
@@ -160,12 +165,14 @@ class InputParser:
                 resp['restaurant'] = r_name
                 resp['type'] = 'phone'
                 break
-
+				
+			# matches a request for a list
             if word.lower() == 'list':
                 resp['count'] = resp['words'].get('CD', [constants.LIST_DEFAULT_COUNT])[0]
                 resp['type'] = 'list'
-                break
-
+                break 
+				
+            #matches a request for a restaurant name
             if word.lower() in constants.NAME_KEYWORDS:
                 r_name = resp['words'].get('NNP', [None])[0]
                 if not r_name:
