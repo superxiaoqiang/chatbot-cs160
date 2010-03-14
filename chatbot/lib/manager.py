@@ -11,13 +11,16 @@ import cmd
 import sys
 
 class Chatbot(cmd.Cmd):
-    prompt = constants.colors.ME + "ME: " + constants.colors.END
+    # removed color b/c it screws up prompt len
+    # delete using backspace wouldn't work right
+    prompt = "ME: "
     output_generator = OutputGenerator()
     input_parser = InputParser()
     internal_state = InternalState()
 
     def _response(self, response):
-        return constants.colors.NYRC + 'NYRC: ' + constants.colors.END + response
+        # make entire response one color
+        return constants.colors.NYRC + 'NYRC: ' + response + constants.colors.END
 
     def start(self):
         intro = self.output_generator.get_intro() + "\n" +\

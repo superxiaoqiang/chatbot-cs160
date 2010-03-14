@@ -64,4 +64,12 @@ grammar = [
       },
       'type': 'confirmation',
     },
+    # matches: start over
+    { 'matches': {
+      'greeting': r'.*\bstart\b\s+\bover\b.*',
+      },
+      'semantics': {
+      },
+      'type': 'reset',
+    },
 ]
