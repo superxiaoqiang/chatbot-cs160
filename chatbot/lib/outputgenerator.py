@@ -32,7 +32,7 @@ class OutputGenerator:
                 response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])        
         elif itype == 'quit' or itype == 'greeting' or itype == 'confirmation':
             response = random.choice(RESPONSES[itype])
-        elif itype == 'phone':
+        elif itype == 'single-phone':
             if input['list']:
                 response = random.choice(RESPONSES[itype]).format(
                     name=input['list'][0]['Name'],
