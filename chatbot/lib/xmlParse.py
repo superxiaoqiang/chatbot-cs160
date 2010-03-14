@@ -69,6 +69,9 @@ class xmlParse:
             returns a list of dictionaries
         """
         filtered_rest_list = self._rest_array
+        if not filters:
+            return filtered_rest_list
+
         for field,value in filters.iteritems():
             if field == "minPrice":
                 filtered_rest_list = self.search_array_range(filtered_rest_list,

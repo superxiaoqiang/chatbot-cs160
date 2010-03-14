@@ -29,7 +29,7 @@ grammar = [
       'semantics': {
       'restaurant': r'.+?\b(?P<term>[A-Z][a-z]+(([\s,:]+[A-Z][a-z]+)+)?)\b.*',
       },
-      'type': 'single-detail',
+      'type': 'leading-single',
     },
     # matches: What is a good Mexican restaurant?
     { 'matches': {

@@ -46,9 +46,25 @@ class InternalState:
         """Process parsed input"""
         top = self.peek_stack()
         if top:
-            top['input'] = input
             it = input['type'].split('-')
             input['list'] = []
+
+            # preprocess confirmation
+            if it[0] == 'confirmation':
+                try:
+                    # look at previous item
+                    item = self.peek_stack(-2)
+
+                    # stop if no more items on stack
+                    it = item['input']['type'].split('-')
+                    log.debug('Previously: {it}'.format(it=it))
+                    if it[0] == 'leading' and it[1] == 'single':
+                        input['type'] = 'single-detail'
+                        it = input['type'].split('-')
+                        input['restaurant'] = item['input']['restaurant']
+                except:
+                    pass
+
 
             if it[0] == 'single':
                 filters = []
@@ -71,6 +87,7 @@ class InternalState:
                         )
                     )
 
+        top['input'] = input
         return input
 
     def reset_stack(self):
