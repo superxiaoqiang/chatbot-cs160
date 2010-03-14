@@ -1,7 +1,7 @@
 # Internal state manager
 #
 import logging
-import constants_local as constants
+import constants
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)

@@ -8,7 +8,7 @@ NAME_KEYWORDS = set(['restaurant', 'place', 'bar', 'joint', 'cafeteria', 'cafe',
 
 PHONE_KEYWORDS = set(['phone'])
 
-SPELLCHECK = 0
+SPELLCHECK = True
 DICT_DIR = '/usr/share/myspell/dicts/'
 
 DEBUG = True
