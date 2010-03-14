@@ -3,6 +3,7 @@
 
 import re
 import logging
+import string
 
 import nltk
 import constants
@@ -105,7 +106,7 @@ class InputParser:
                 resp['type'] = 'list'
                 break 
 
-            # matches a request for a restaurant name
+            # matches a request for a cuisine type
             if word.lower() in constants.NAME_KEYWORDS:
                 r_name = resp['words'].get('NNP', [None])[0]
                 if not r_name:
@@ -113,10 +114,9 @@ class InputParser:
                         if kw not in constants.NAME_KEYWORDS:
                             r_name = kw
                             break
-
                 if r_name:
-                    resp['type'] = 'single-detail'
-                    resp['restaurant'] = r_name
+                    resp['type'] = 'single-cuisine'
+                    resp['cuisine'] = string.capitalize(r_name)
 
         if constants.DEBUG:
             log.debug(resp)
