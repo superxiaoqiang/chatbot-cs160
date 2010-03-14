@@ -76,11 +76,11 @@ class InputParser:
 
 
         if not resp['words']:
-            log.debug("No words: " + resp)
+            log.debug("No words: " + str(resp))
             return resp
 
         if not resp['words'].get('NN', None):
-            log.debug("No NN: %s" + resp)
+            log.debug("No NN: " + str(resp))
             log.debug(resp)
             return resp
 
@@ -115,7 +115,7 @@ class InputParser:
                     resp['type'] = 'single-detail'
                     resp['restaurant'] = r_name
 
-        log.debug( resp)
+        log.debug(resp)
         return resp
 
     def format_keywords(self, keyword):
