@@ -57,4 +57,10 @@ RESPONSES = {
         'Good.',
         'Yay!',
     ),
+      'nomatch': (
+        'I\'m sorry, I don\'t understand what you mean. Try again.',
+        'Could you repeat that, I didn\'t understand.',
+        'I\'m sorry, can you rephrase that?',
+        'I\'m not sure what you mean, can you repeat that?',
+    ),
 }

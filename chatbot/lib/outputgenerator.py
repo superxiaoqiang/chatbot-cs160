@@ -21,7 +21,7 @@ class OutputGenerator:
         """
         itype = input['type']
         if itype == 'nomatch':
-            response = "I'm sorry, I don't understand what you mean. Try again."
+            response = random.choice(RESPONSES[itype])
         elif itype == 'quit' or itype == 'greeting' or itype == 'confirmation':
             response = random.choice(RESPONSES[itype])
         elif itype == 'phone':
