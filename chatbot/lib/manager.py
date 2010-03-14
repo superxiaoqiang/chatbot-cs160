@@ -3,117 +3,45 @@
 
 from inputparser import *
 from outputgenerator import *
-from internalstate import *
 from datetime import datetime
 import logging
+import cmd
+import sys
 
-class Chatbot(object):
-    def __init__(self):
-        """
-        Initialize the chatbot.
-        """
+class Chatbot(cmd.Cmd):
+    prompt = "\033[1;92mME:\033[1;m "
+    output_generator = OutputGenerator()
+    input_parser = InputParser()
 
-        self.input_parser = InputParser()
-        self.output_generator = OutputGenerator()
-        self.internal_state = InternalState()
-        self._raw_input = ''
-        self._input = self._raw_input
-        self._response = ''
-        self._DEBUG = False
-    def start(self, quit="quit"):
-        """
-        Starts the chatbot
-        
-        @type quit: C{string}
-        @param quit: string to quit on
-        @rtype: C{list}
-        """
-        LOG_FILENAME = chatbot.get_current_id()
-        logging.basicConfig(filename='logs/'+LOG_FILENAME,level=logging.INFO,format="")
-        print "Dialog Timestamp: " + LOG_FILENAME
-        if self._DEBUG:
-            logging.info("Dialog Timestamp: " + LOG_FILENAME)
+    def _response(self, response):
+        return '\033[1;34mNYRC:\033[1;m ' + response
 
-        self._input = {'type': 'greeting'}
-        self.respond()
-        self.print_response()
-        if self._DEBUG:
-            logging.info('NYRC: ' + self._response)
+    def start(self):
+        intro = self.output_generator.get_intro() + "\n" +\
+            self._response(self.output_generator.respond({'type': 'greeting'}))
+        self.cmdloop(intro)
 
-        self._raw_input = ""
-        while self._raw_input != quit:
-            self._raw_input = quit
-            try:
-                self.set_raw_input()
+    def default(self, line):
+        # parse the input
+        input = self.input_parser.parse(line)
 
-            except EOFError:
-                print self.get_raw_input()
+        # process the parsed input
+        # prepare it for output manager
+        response = self.output_generator.respond(input)
 
-            if self._raw_input:
-                # prepare the input
-                # according to internal state
-                #self.prepare_input()
+        print self._response(response)
 
-                # parse the input
-                self.parse_input()
-
-                # process the parsed input
-                # prepare it for output manager
-        #       self.process_input()
-	#	print "$$$$$$$"
-        #       print self._input
-        #       print "*****"
-        #       print self._raw_input
-                # get the response
-                # from the output manager
-                self.respond()
-                if len(self.output_generator._istate_response) >0:
-                    self.internal_state.pop_stack(-1)
-                    self.internal_state.push_stack(self.output_generator._istate_response)
-                    self.output_generator._istate_response = {}
-            
-                print "stack size is: " + str(len(self.internal_state.stack))
-                print "the stack is currently:" + str(self.internal_state.stack)
-                # output response
-                self.print_response()
-                if self._DEBUG:
-                    logging.info('NYRC: ' + self._response)
-
-    def set_raw_input(self):
-        self._raw_input = raw_input("\033[1;92mME:\033[1;m ")
-        if self._DEBUG:
-            logging.info('ME: ' + self._raw_input)
-
-    def get_raw_input(self):
-        return self._raw_input
-
-    def parse_input(self):
-        self._input = self.input_parser.parse(self._raw_input)
-
-    def prepare_input(self):
-        self._raw_input = self.internal_state.prepare_input(self._raw_input)
-
-    def process_input(self):
-        self._input = self.internal_state.process_input(self._input)
-
-    def respond(self):
-        self._response = self.output_generator.respond(self._input)
-
-    def print_response(self):
-        print '\033[1;34mNYRC:\033[1;m ' + self._response
-
-    def get_intro(self):
+    def do_help(self, cmd):
         print self.output_generator.get_intro()
 
-    def get_current_id(self):
-        return str(datetime.now())
+    def do_quit(self, cmd):
+        self.default("quit")
+        sys.exit(0)
 
-    def set_debug(self):
-        self._DEBUG = True
+    def do_EOF(self, cmd):
+        self.do_quit(cmd)
 
 if __name__ == "__main__":
 
     chatbot = Chatbot()
-    chatbot.set_debug()
-    chatbot.get_intro()
     chatbot.start()
