@@ -10,14 +10,15 @@ from grammar import grammar
 if constants.SPELLCHECK:
     from didyoumean import DidYouMean
 
-log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-formatter = logging.Formatter(constants.colors.DEBUG 
-    + "%(name)s - %(message)s" + constants.colors.END)
+if constants.DEBUG:
+    log = logging.getLogger(__name__)
+    log.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler()
+    formatter = logging.Formatter(constants.colors.DEBUG 
+        + "%(name)s - %(message)s" + constants.colors.END)
 
-ch.setFormatter(formatter)
-log.addHandler(ch)
+    ch.setFormatter(formatter)
+    log.addHandler(ch)
 
 
 class InputParser:
@@ -76,15 +77,18 @@ class InputParser:
 
 
         if not resp['words']:
-            log.debug("No words: " + str(resp))
+            if constants.DEBUG:
+                log.debug("No words: " + str(resp))
             return resp
 
         if not resp['words'].get('NN', None):
-            log.debug("No NN: " + str(resp))
+            if constants.DEBUG:
+                log.debug("No NN: " + str(resp))
             return resp
 
         for word in resp['words'].get('NN', None):
-            log.debug("NN found: " + word)
+            if constants.DEBUG:
+                log.debug("NN found: " + word)
 
             # matches a phone number request
             if word.lower() in constants.PHONE_KEYWORDS:
@@ -114,7 +118,8 @@ class InputParser:
                     resp['type'] = 'single-detail'
                     resp['restaurant'] = r_name
 
-        log.debug(resp)
+        if constants.DEBUG:
+            log.debug(resp)
         return resp
 
     def format_keywords(self, keyword):
@@ -188,7 +193,8 @@ class InputParser:
         # parse for keywords
         regexp_parser = nltk.RegexpParser(grammar)
         tree = regexp_parser.parse(tagset)
-        log.debug('Tree: ' + str(tree))
+        if constants.DEBUG:
+            log.debug('Tree: ' + str(tree))
         # walk through the grammar tree and pick out keywords
         # go for noun phrases first
         for subtree in tree.subtrees(filter =
@@ -234,8 +240,10 @@ class InputParser:
                 break
 
         if matches:
-            log.debug(input + ' -- ' + str(resp))
+            if constants.DEBUG:
+                log.debug(input + ' -- ' + str(resp))
             return resp
         else:
-            log.debug(input + ' -- ' + str(False))
+            if constants.DEBUG:
+                log.debug(input + ' -- ' + str(False))
             return False
