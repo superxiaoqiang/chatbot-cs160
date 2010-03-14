@@ -17,6 +17,9 @@ RESPONSES = {
     'phone': (
         'The phone number of {name} is {phone}.',
     ),
+    'phone-empty': (
+        'Sorry, we do not have a phone number listed for {name}.',
+    ),
     'leading-single': (
         'Is {name} a restaurant? You may respond by saying yes. If not, perhaps {name} is a type of cuisine or a city?',
     ),
