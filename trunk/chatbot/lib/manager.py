@@ -4,6 +4,7 @@
 from inputparser import *
 from outputgenerator import *
 from datetime import datetime
+from internalstate import * 
 import logging
 import cmd
 import sys
@@ -12,6 +13,7 @@ class Chatbot(cmd.Cmd):
     prompt = "\033[1;92mME:\033[1;m "
     output_generator = OutputGenerator()
     input_parser = InputParser()
+    internal_state = InternalState()
 
     def _response(self, response):
         return '\033[1;34mNYRC:\033[1;m ' + response
@@ -22,12 +24,24 @@ class Chatbot(cmd.Cmd):
         self.cmdloop(intro)
 
     def default(self, line):
+        # prepare_input
+        self.internal_state.prepare_input(line)
         # parse the input
         input = self.input_parser.parse(line)
 
         # process the parsed input
         # prepare it for output manager
+        self.internal_state.process_input(input)
         response = self.output_generator.respond(input)
+
+        if len(self.output_generator._istate_response) >0:
+            self.internal_state.pop_stack(-1)
+            self.internal_state.push_stack(self.output_generator._istate_response)
+            self.output_generator._istate_response = {}
+    
+        print "stack size is: " + str(len(self.internal_state.stack))
+        print "the stack is currently:" + str(self.internal_state.stack)
+        # output response
 
         print self._response(response)
 
