@@ -60,8 +60,10 @@ class InternalState:
                     # look at previous item
                     item = self.peek_stack(-2)
 
-                    # stop if no more items on stack
-                    log.debug('Previously: {it}'.format(it=it))
+                    log.debug('Previous type: {it}'.format(
+                        it=item['input']['type'],
+                    ))
+                    # carry over restaurant
                     if item['input']['type'] == 'leading-single' \
                         or item['input']['type'] == 'single-detail':
                         input['type'] = 'single-detail'

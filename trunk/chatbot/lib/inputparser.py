@@ -82,6 +82,19 @@ class InputParser:
                 log.debug("No words: " + str(resp))
             return resp
 
+        w = resp['words']
+        if 'between' in set(w.get('IN', ())) \
+            or 'price' in set(w.get('NN', ())):
+            # price between a and b
+            price_range = w.get('CD', ())
+            # require at least 2 numerals
+            if len(price_range) >= 2:
+                resp['min'] = min(price_range)
+                resp['max'] = max(price_range)
+                resp['type'] = 'list-pricerange'
+
+
+        # from here on there must be nouns
         if not resp['words'].get('NN', None):
             if constants.DEBUG:
                 log.debug("No NN: " + str(resp))
@@ -198,17 +211,20 @@ class InputParser:
             CD: {<CD>}
         # chunk adjectives
             JJ: {<JJ.*>}
+        # preposition or conjunction
+            IN: {<IN>}
         """
         # parse for keywords
         regexp_parser = nltk.RegexpParser(grammar)
         tree = regexp_parser.parse(tagset)
         if constants.DEBUG:
             log.debug('Tree: ' + str(tree))
+
         # walk through the grammar tree and pick out keywords
         # go for noun phrases first
         for subtree in tree.subtrees(filter =
             lambda t: t.node == 'NP' or t.node == 'CD' \
-                or t.node == 'JJ'):
+                or t.node == 'JJ' or t.node == 'IN'):
             keyword = list(subtree.leaves())
             keyword = self.format_keywords(keyword)
 
