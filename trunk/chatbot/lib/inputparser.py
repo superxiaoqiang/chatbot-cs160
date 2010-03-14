@@ -97,7 +97,7 @@ class InputParser:
                          resp['words']['NN'][-1]
               
                 resp['restaurant'] = r_name
-                resp['type'] = 'phone'
+                resp['type'] = 'single-phone'
                 
                 break
 
