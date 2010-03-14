@@ -59,7 +59,7 @@ class Chatbot(object):
 
                 # process the parsed input
                 # prepare it for output manager
-                self.process_input()
+        #       self.process_input()
 	#	print "$$$$$$$"
         #       print self._input
         #       print "*****"
