@@ -88,6 +88,9 @@ class InternalState:
                 elif it[1] == 'cuisine':
                     filters = {'Cuisine': input['cuisine']}
 
+                elif it[1] == 'location':
+                    filters = {'Name': input['restaurant']}
+
                 r_list = self._xmlparser.get_restaurants(filters)
                 if r_list:
                     random.shuffle(r_list)
@@ -107,6 +110,12 @@ class InternalState:
                 if it[1] == 'price' and it[2] == 'single':
                     filters = {
                         'Cost': input['price'],
+                    }
+
+                # meal
+                if it[1] == 'meal' and it[2] == 'single':
+                    filters = {
+                        'MealsServed': input['meal'],
                     }
 
                 input['list'] = self._xmlparser.get_restaurants(filters)
