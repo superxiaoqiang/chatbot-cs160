@@ -20,7 +20,7 @@ RESPONSES = {
     'single-phone-empty': (
         'Sorry, we do not have a phone number listed for {name}.',
     ),
-    'leading-single': (
+    'leading-single-detail': (
         'Is {name} a restaurant? You may respond by saying yes. If not, perhaps {name} is a type of cuisine or a city?',
     ),
     'single-detail': (
@@ -50,6 +50,13 @@ RESPONSES = {
         'Could not find any information about a {cuisine} restaurant.',
         'We have no record of {cuisine} restaurants.',
         'Sorry, no {cuisine} restaurants are available.',
+    ),
+    'list-price-range': (
+        'We have found {count} restaurants with prices between {pmin}$ and {pmax}$. Here are {n} of them: {r_list}.',
+    ),
+    'list-price-range-empty': (
+        'Sorry, we have no restaurants costing between {pmin}$ and {pmax}$ price range.',
+        'No restaurants are available in the {pmin}-{pmax}$ price range.',
     ),
     'confirmation': (
         'Ok, great.',

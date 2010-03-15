@@ -64,7 +64,7 @@ class InternalState:
                         it=item['input']['type'],
                     ))
                     # carry over restaurant
-                    if item['input']['type'] == 'leading-single' \
+                    if item['input']['type'] == 'leading-single-detail' \
                         or item['input']['type'] == 'single-detail':
                         input['type'] = 'single-detail'
                         it = input['type'].split('-')
@@ -92,6 +92,17 @@ class InternalState:
                 if r_list:
                     random.shuffle(r_list)
                     input['list'] = [r_list[0]]
+
+            if it[0] == 'list':
+                filters = []
+
+                if it[1] == 'price' and it[2] == 'range':
+                    filters = {
+                        'minPrice': input['min'],
+                        'maxPrice': input['max'],
+                    }
+
+                input['list'] = self._xmlparser.get_restaurants(filters)
 
             # update the stack with
             if constants.DEBUG:

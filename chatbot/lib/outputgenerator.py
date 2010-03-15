@@ -20,9 +20,39 @@ class OutputGenerator:
         @rtype: C{string}
         """
         itype = input['type']
-        if itype == 'nomatch':
+        if itype == 'quit' or itype == 'greeting' or itype == 'confirmation' or itype == 'nomatch':
             response = random.choice(RESPONSES[itype])
-        elif itype == 'location':
+
+        # list by price range
+        elif itype == 'list-price-range':
+            count = len(input['list'])
+            n = min((count, 5))
+            
+            # if found any
+            if n:
+                r_names = []
+                for i in range(0, n):
+                    r_names.append(input['list'][i]['Name'])
+
+                r_list = ", ".join(r_names)
+                response = random.choice(RESPONSES[itype]).format(
+                    r_list=r_list,
+                    count=count,
+                    n=n,
+                    pmin=input['min'],
+                    pmax=input['max'],
+                )
+
+            else:
+                response = random.choice(RESPONSES[itype+'-empty']).format(
+                    count=count,
+                    n=n,
+                    pmin=input['min'],
+                    pmax=input['max'],
+                )
+
+        # show restaurant's location
+        elif itype == 'single-location':
             if input['list']:
                 response = random.choice(RESPONSES[itype]).format(
                     name=input['list'][0]['Name'],
@@ -30,8 +60,8 @@ class OutputGenerator:
                 )    
             else:
                 response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])        
-        elif itype == 'quit' or itype == 'greeting' or itype == 'confirmation':
-            response = random.choice(RESPONSES[itype])
+
+        # show restaurant's phone #
         elif itype == 'single-phone':
             if input['list']:
                 response = random.choice(RESPONSES[itype]).format(
@@ -40,8 +70,12 @@ class OutputGenerator:
                 )
             else:
                 response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
-        elif itype == 'leading-single':
+
+        # ask leading question for details on a single restaurant
+        elif itype == 'leading-single-detail':
             response = random.choice(RESPONSES[itype]).format(name=input['restaurant'])
+
+        # show details about a single restaurant
         elif itype == 'single-detail':
             if input['list']:
                 response = random.choice(RESPONSES[itype]).format(
@@ -56,6 +90,8 @@ class OutputGenerator:
                 )
             else:
                 response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
+
+        # show a single restaurant for this type of cuisine
         elif itype == 'single-cuisine':
             if input['list']:
                 response = random.choice(RESPONSES[itype]).format(
@@ -64,7 +100,8 @@ class OutputGenerator:
                 )
             else:
                 response = random.choice(RESPONSES[itype+'-empty']).format(cuisine=input['cuisine'].capitalize())
-        
+
+        # if nothing matches, just repeat the input as a string
         else:
             response = str(input)
 

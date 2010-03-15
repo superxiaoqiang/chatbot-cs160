@@ -91,7 +91,7 @@ class InputParser:
             if len(price_range) >= 2:
                 resp['min'] = min(price_range)
                 resp['max'] = max(price_range)
-                resp['type'] = 'list-pricerange'
+                resp['type'] = 'list-price-range'
 
 
         # from here on there must be nouns
@@ -120,12 +120,12 @@ class InputParser:
                 resp['type'] = 'list'
                 break 
                 
-            #matches a request for an address    
+            # matches a request for an address
             if word.lower() == 'address':
                 r_name = resp['words'].get('NNP', [None])[0] or \
                          resp['words']['NN'][-1]
                 resp['restaurant'] = r_name
-                resp['type'] = 'location'
+                resp['type'] = 'single-location'
                 break
                 
             # matches a request for a cuisine type
