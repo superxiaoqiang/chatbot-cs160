@@ -49,26 +49,27 @@ class InternalState:
 
     def process_input(self, input):
         """Process parsed input"""
+        # get current item
         top = self.peek_stack()
+        filters = {}
+        # get previous item
+        prev = self.peek_stack(-2)
         if top:
             it = input['type'].split('-')
             input['list'] = []
 
             # preprocess confirmation
-            if it[0] == 'confirmation':
+            if it[0] == 'confirmation' and prev:
                 try:
-                    # look at previous item
-                    item = self.peek_stack(-2)
-
                     log.debug('Previous type: {it}'.format(
-                        it=item['input']['type'],
+                        it=prev['input']['type'],
                     ))
                     # carry over restaurant
-                    if item['input']['type'] == 'leading-single-detail' \
-                        or item['input']['type'] == 'single-detail':
+                    if prev['input']['type'] == 'leading-single-detail' \
+                        or prev['input']['type'] == 'single-detail':
                         input['type'] = 'single-detail'
                         it = input['type'].split('-')
-                        input['restaurant'] = item['input']['restaurant']
+                        input['restaurant'] = prev['input']['restaurant']
                 except:
                     pass
 
@@ -79,17 +80,16 @@ class InternalState:
                 it = input['type'].split('-')
 
             if it[0] == 'single':
-                filters = []
 
                 if it[1] == 'detail' \
                   or it[1] == 'phone':
-                    filters = {'Name': input['restaurant']}
+                    filters.update({'Name': input['restaurant']})
 
                 elif it[1] == 'cuisine':
-                    filters = {'Cuisine': input['cuisine']}
+                    filters.update({'Cuisine': input['cuisine']})
 
                 elif it[1] == 'location':
-                    filters = {'Name': input['restaurant']}
+                    filters.update({'Name': input['restaurant']})
 
                 r_list = self._xmlparser.get_restaurants(filters)
                 if r_list:
@@ -97,28 +97,31 @@ class InternalState:
                     input['list'] = [r_list[0]]
 
             if it[0] == 'list':
-                filters = []
+                # check whether to start from previous or from scratch
+                if prev and prev['input']['type'].split('-')[0] == 'list':
+                    filters.update(prev['filters'])
 
                 # price range
                 if it[1] == 'price' and it[2] == 'range':
-                    filters = {
+                    filters.update({
                         'minPrice': input['min'],
                         'maxPrice': input['max'],
-                    }
+                    })
 
                 # exact price
                 if it[1] == 'price' and it[2] == 'single':
-                    filters = {
+                    filters.update({
                         'Cost': input['price'],
-                    }
+                    })
 
                 # meal
                 if it[1] == 'meal' and it[2] == 'single':
-                    filters = {
+                    filters.update({
                         'MealsServed': input['meal'],
-                    }
+                    })
 
                 input['list'] = self._xmlparser.get_restaurants(filters)
+
 
             # update the stack with
             if constants.DEBUG:
@@ -130,6 +133,8 @@ class InternalState:
                     )
 
         top['input'] = input
+        top['filters'] = filters
+        log.debug('Filters: {f}'.format(f=filters))
         return input
 
     def reset_stack(self):
