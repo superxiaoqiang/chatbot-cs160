@@ -58,6 +58,13 @@ RESPONSES = {
         'Sorry, I have no restaurants costing between {pmin}$ and {pmax}$ price range.',
         'No restaurants are available in the {pmin}-{pmax}$ price range.',
     ),
+    'list-price-single': (
+        'I have found {count} restaurants at price {p}$. Here are {n} of them: {r_list}.',
+    ),
+    'list-price-single-empty': (
+        'Sorry, I have no restaurants costing {p}$.',
+        'No restaurants are available at price {p}$.',
+    ),
     'confirmation': (
         'Ok, great.',
         'I\'m glad to hear that.',

@@ -83,31 +83,39 @@ class InputParser:
             return resp
 
         w = resp['words']
+
         if 'between' in set(w.get('IN', ())) \
             or 'price' in set(w.get('NN', ())):
-            # price between a and b
             price_range = w.get('CD', ())
+
+            # price between a and b
             # require at least 2 numerals
             if len(price_range) >= 2:
                 resp['min'] = min(price_range)
                 resp['max'] = max(price_range)
                 resp['type'] = 'list-price-range'
 
+            # price of exactly a
+            elif len(price_range) > 0:
+                price_range = w.get('CD', ())
+                resp['price'] = min(price_range)
+                resp['type'] = 'list-price-single'
+
 
         # from here on there must be nouns
-        if not resp['words'].get('NN', None):
+        if not w.get('NN', None):
             if constants.DEBUG:
                 log.debug("No NN: " + str(resp))
             return resp
 
-        for word in resp['words'].get('NN', None):
+        for word in w.get('NN', None):
             if constants.DEBUG:
                 log.debug("NN found: " + word)
 
             # matches a phone number request
             if word.lower() in constants.PHONE_KEYWORDS:
-                r_name = resp['words'].get('NNP', [None])[0] or \
-                         resp['words']['NN'][-1]
+                r_name = w.get('NNP', [None])[0] or \
+                         w['NN'][-1]
               
                 resp['restaurant'] = r_name
                 resp['type'] = 'single-phone'
@@ -116,23 +124,23 @@ class InputParser:
 
             # matches a request for a list
             if word.lower() == 'list':
-                resp['count'] = resp['words'].get('CD', [constants.LIST_DEFAULT_COUNT])[0]
+                resp['count'] = w.get('CD', [constants.LIST_DEFAULT_COUNT])[0]
                 resp['type'] = 'list'
                 break 
                 
             # matches a request for an address
             if word.lower() == 'address':
-                r_name = resp['words'].get('NNP', [None])[0] or \
-                         resp['words']['NN'][-1]
+                r_name = w.get('NNP', [None])[0] or \
+                         w['NN'][-1]
                 resp['restaurant'] = r_name
                 resp['type'] = 'single-location'
                 break
                 
             # matches a request for a cuisine type
             if word.lower() in constants.NAME_KEYWORDS:
-                r_name = resp['words'].get('NNP', [None])[0]
+                r_name = w.get('NNP', [None])[0]
                 if not r_name:
-                    for kw in reversed(resp['words']['NN']):
+                    for kw in reversed(w['NN']):
                         if kw not in constants.NAME_KEYWORDS:
                             r_name = kw
                             break

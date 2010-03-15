@@ -26,6 +26,7 @@ class OutputGenerator:
         # list by price range
         elif itype == 'list-price-range':
             count = len(input['list'])
+            random.shuffle(input['list'])
             n = min((count, 5))
             
             # if found any
@@ -49,6 +50,33 @@ class OutputGenerator:
                     n=n,
                     pmin=input['min'],
                     pmax=input['max'],
+                )
+
+        # list by exact price
+        elif itype == 'list-price-single':
+            count = len(input['list'])
+            random.shuffle(input['list'])
+            n = min((count, 5))
+            
+            # if found any
+            if n:
+                r_names = []
+                for i in range(0, n):
+                    r_names.append(input['list'][i]['Name'])
+
+                r_list = ", ".join(r_names)
+                response = random.choice(RESPONSES[itype]).format(
+                    r_list=r_list,
+                    count=count,
+                    n=n,
+                    p=input['price'],
+                )
+
+            else:
+                response = random.choice(RESPONSES[itype+'-empty']).format(
+                    count=count,
+                    n=n,
+                    p=input['price'],
                 )
 
         # show restaurant's location
