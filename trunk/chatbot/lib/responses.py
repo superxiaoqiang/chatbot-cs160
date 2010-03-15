@@ -49,6 +49,16 @@ RESPONSES = {
         'I\'m sorry, I cannot find an address for {name}.',
         'Ooops... I don\'t think I have the address for {name}.',
     ),
+    'single-zone': (
+        '{name} is in {zone}.',
+        '{name}\'s neighborhood is {zone}.',
+        '{name} can be found in {zone}.',
+    ),
+    'single-zone-empty': (
+        'Sorry, I do not have a neighborhood listed for {zone}.',
+        'I\'m sorry, I cannot find a neighborhood for {zone}.',
+        'Ooops... I don\'t think I have the neighborhood for {zone}.',
+    ),
     'single-price': (
         'An average meal at {name} costs {price}$.',
     ),
