@@ -3,6 +3,7 @@
 
 import random
 import re
+import constants
 
 from responses import RESPONSES
 
@@ -27,7 +28,7 @@ class OutputGenerator:
         elif itype == 'list-price-range':
             count = len(input['list'])
             random.shuffle(input['list'])
-            n = min((count, 5))
+            n = min((count, constants.LIST_DEFAULT_COUNT))
             
             # if found any
             if n:
@@ -56,7 +57,7 @@ class OutputGenerator:
         elif itype == 'list-price-single':
             count = len(input['list'])
             random.shuffle(input['list'])
-            n = min((count, 5))
+            n = min((count, constants.LIST_DEFAULT_COUNT))
             
             # if found any
             if n:
@@ -83,7 +84,7 @@ class OutputGenerator:
         elif itype == 'list-meal-single':
             count = len(input['list'])
             random.shuffle(input['list'])
-            n = min((count, 5))
+            n = min((count, constants.LIST_DEFAULT_COUNT))
             
             # if found any
             if n:

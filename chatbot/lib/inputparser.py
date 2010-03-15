@@ -76,13 +76,13 @@ class InputParser:
         tagset = self.build_tagset(input)
         print  tagset
         resp['words'] = self.build_keywords(tagset)
+        w = resp['words']
 
-        if not resp['words']:
+        if not w:
             if constants.DEBUG:
                 log.debug("No words: " + str(resp))
             return resp
 
-        w = resp['words']
         #matches "how expensive it is" and "is it expensive"
         if 'expensive' in set(w.get('JJ', ())):
             r_name = w.get('NNP', [None])[0] or \
@@ -112,7 +112,6 @@ class InputParser:
                 return resp
 
 
-
         # need to merge NN and JJ for this step
         w['NNJJ'] = set(w.get('NN', []) + w.get('JJ', []))
         meal = constants.MEALS_SET & w['NNJJ']
@@ -123,51 +122,48 @@ class InputParser:
 
 
         # from here on there must be nouns
-        if not w.get('NN', None):
+        NN_set = set(w.get('NN', []))
+        if not NN_set:
             if constants.DEBUG:
                 log.debug("No NN: " + str(resp))
             return resp
 
-        for word in w.get('NN', None):
-            if constants.DEBUG:
-                log.debug("NN found: " + word)
+        # matches a phone number request
+        if NN_set & constants.PHONE_KEYWORDS:
+            r_name = w.get('NNP', [None])[0] or \
+                        w['NN'][-1]
 
-            # matches a phone number request
-            if word.lower() in constants.PHONE_KEYWORDS:
-                r_name = w.get('NNP', [None])[0] or \
-                         w['NN'][-1]
-              
-                resp['restaurant'] = r_name
-                resp['type'] = 'single-phone'
-                
-                break
+            resp['restaurant'] = r_name
+            resp['type'] = 'single-phone'
+            return resp
 
-            # matches a request for a list
-            if word.lower() == 'list':
-                resp['count'] = w.get('CD', [constants.LIST_DEFAULT_COUNT])[0]
-                resp['type'] = 'list'
-                break 
-                
-            # matches a request for an address
-            if word.lower() == 'address':
-                r_name = w.get('NNP', [None])[0] or \
-                         w['NN'][-1]
-                resp['restaurant'] = r_name
-                resp['type'] = 'single-location'
-                break
-                
-            # matches a request for a cuisine type
-            if word.lower() in constants.NAME_KEYWORDS:
-                r_name = w.get('NNP', [None])[0]
-                if not r_name:
-                    for kw in reversed(w['NN']):
-                        if kw not in constants.NAME_KEYWORDS:
-                            r_name = kw
-                            break
-                if r_name:
-                    resp['type'] = 'single-cuisine'
-                    resp['cuisine'] = string.capitalize(r_name)
-                    
+        # matches a request for a list
+        if 'list' in NN_set:
+            resp['count'] = w.get('CD', [constants.LIST_DEFAULT_COUNT])[0]
+            resp['type'] = 'list'
+            return resp
+
+        # matches a request for an address
+        if 'address' in NN_set:
+            r_name = w.get('NNP', [None])[0] or \
+                        w['NN'][-1]
+            resp['restaurant'] = r_name
+            resp['type'] = 'single-location'
+            return resp
+
+        # matches a request for a cuisine type
+        if NN_set & constants.NAME_KEYWORDS:
+            r_name = w.get('NNP', [None])[0]
+            if not r_name:
+                for kw in reversed(w['NN']):
+                    if kw not in constants.NAME_KEYWORDS:
+                        r_name = kw
+                        break
+            if r_name:
+                resp['type'] = 'single-cuisine'
+                resp['cuisine'] = string.capitalize(r_name)
+                return resp
+
 
         if constants.DEBUG:
             log.debug(resp)
