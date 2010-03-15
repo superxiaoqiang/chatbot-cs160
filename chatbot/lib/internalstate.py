@@ -102,7 +102,7 @@ class InternalState:
             if it[0] == 'single':
 
                 if it[1] in set(['detail', 'phone',
-                    'price', 'location']):
+                    'price', 'location' , 'field22']):
                     filters.update({'Name': input['restaurant']})
 
                 elif it[1] == 'cuisine':

@@ -31,11 +31,18 @@ RESPONSES = {
         'I\'m sorry, I have no phone number for {name}.',
         'Ooops... I don\'t think I have the phone number for {name}.',
     ),
+    'single-smoke': (
+        '{name} says that {smoke}.',
+    ),
+    'single-smoke-empty': (
+        'Sorry, I do not have a info on smoking at {name}.',
+        'I\'m sorry, I dont know if you can smoke at {name}.',
+    ),
     'single-location': (
-        '{name} is located at {address}.',
-        '{name}\'s address is {address}.',
-        'The address of {name} is {address}.',
-        '{name} can be found at {address}.',
+        '{name} is located at {location}.',
+        '{name}\'s address is {location}.',
+        'The address of {name} is {location}.',
+        '{name} can be found at {location}.',
     ),
     'single-location-empty': (
         'Sorry, I do not have an address listed for {name}.',

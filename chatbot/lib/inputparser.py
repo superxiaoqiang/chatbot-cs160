@@ -139,6 +139,15 @@ class InputParser:
             resp['restaurant'] = r_name
             resp['type'] = 'single-phone'
             return resp
+            
+        # matches a phone number request
+        if 'smoking' in NN_set and 'allow' in NN_set:
+            r_name = w.get('NNP', [None])[0] or \
+                        w['NN'][-1]
+
+            resp['restaurant'] = r_name
+            resp['type'] = 'single-smoke'
+            return resp
                 
         # matches a single meal request
         if NN_set & constants.MEALS_SET:
