@@ -94,13 +94,21 @@ class InputParser:
                 resp['min'] = min(price_range)
                 resp['max'] = max(price_range)
                 resp['type'] = 'list-price-range'
+                return resp
 
             # price of exactly a
-            elif len(price_range) > 0:
+            if len(price_range) > 0:
                 price_range = w.get('CD', ())
                 resp['price'] = min(price_range)
                 resp['type'] = 'list-price-single'
+                return resp
 
+        # need to merge NN and JJ for this step
+        w['NNJJ'] = set(w.get('NN', []) + w.get('JJ', []))
+        if 'breakfast' in w['NNJJ']:
+            resp['type'] = 'list-meal-single'
+            resp['meal'] = 'breakfast'
+            return resp
 
         # from here on there must be nouns
         if not w.get('NN', None):

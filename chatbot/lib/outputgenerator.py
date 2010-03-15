@@ -131,7 +131,7 @@ class OutputGenerator:
 
         # if nothing matches, just repeat the input as a string
         else:
-            response = str(input)
+            response = str(input['type'])
 
         return response
 
