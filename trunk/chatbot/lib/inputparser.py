@@ -74,8 +74,8 @@ class InputParser:
         resp['type'] = 'nomatch'
 
         tagset = self.build_tagset(input)
+        print  tagset
         resp['words'] = self.build_keywords(tagset)
-
 
         if not resp['words']:
             if constants.DEBUG:
@@ -83,7 +83,15 @@ class InputParser:
             return resp
 
         w = resp['words']
-
+        #matches "how expensive it is" and "is it expensive"
+        if 'expensive' in set(w.get('JJ', ())):
+            r_name = w.get('NNP', [None])[0] or \
+                         w['NN'][-1]
+              
+            resp['restaurant'] = r_name
+            resp['type'] = 'single-price'
+            
+            
         if 'between' in set(w.get('IN', ())) \
             or 'price' in set(w.get('NN', ())):
             price_range = w.get('CD', ())
@@ -103,6 +111,8 @@ class InputParser:
                 resp['type'] = 'list-price-single'
                 return resp
 
+
+
         # need to merge NN and JJ for this step
         w['NNJJ'] = set(w.get('NN', []) + w.get('JJ', []))
         meal = constants.MEALS_SET & w['NNJJ']
@@ -110,6 +120,7 @@ class InputParser:
             resp['type'] = 'list-meal-single'
             resp['meal'] = meal.pop()
             return resp
+
 
         # from here on there must be nouns
         if not w.get('NN', None):
@@ -156,6 +167,7 @@ class InputParser:
                 if r_name:
                     resp['type'] = 'single-cuisine'
                     resp['cuisine'] = string.capitalize(r_name)
+                    
 
         if constants.DEBUG:
             log.debug(resp)

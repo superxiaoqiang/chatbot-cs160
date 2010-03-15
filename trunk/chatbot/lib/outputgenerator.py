@@ -125,6 +125,16 @@ class OutputGenerator:
                 )
             else:
                 response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
+                
+        # show restaurant's phone #
+        elif itype == 'single-price':
+            if input['list']:
+                response = random.choice(RESPONSES[itype]).format(
+                    name=input['list'][0]['Name'],
+                    price=input['list'][0]['Cost'],
+                )
+            else:
+                response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
 
         # ask leading question for details on a single restaurant
         elif itype == 'leading-single-detail':
