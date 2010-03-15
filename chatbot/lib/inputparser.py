@@ -74,8 +74,7 @@ class InputParser:
         resp['type'] = 'nomatch'
 
         tagset = self.build_tagset(input)
-        print  tagset
-        resp['words'] = self.build_keywords(tagset)
+               resp['words'] = self.build_keywords(tagset)
         w = resp['words']
 
         if not w:
@@ -136,6 +135,17 @@ class InputParser:
             resp['restaurant'] = r_name
             resp['type'] = 'single-phone'
             return resp
+                
+            # matches a phone number request
+            if word.lower() in constants.MEAL_SET:
+                r_name = w.get('NNP', [None])[0] or \
+                         w['NN'][-1]
+              
+                resp['restaurant'] = r_name
+                resp['type'] = 'single-meal'
+                resp['meal'] = word.lower()
+                
+                break
 
         # matches a request for a list
         if 'list' in NN_set:

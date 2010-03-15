@@ -116,6 +116,17 @@ class OutputGenerator:
                 )    
             else:
                 response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])        
+                
+        # show restaurant's meal
+        elif itype == 'single-meal':
+            if input['list']:
+                response = random.choice(RESPONSES[itype]).format(
+                    name=input['list'][0]['Name'],
+                    meal=input['list'][0]['Meal'],
+                )    
+            else:
+                response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])        
+
 
         # show restaurant's phone #
         elif itype == 'single-phone':
