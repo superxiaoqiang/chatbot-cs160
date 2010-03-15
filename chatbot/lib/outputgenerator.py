@@ -109,7 +109,7 @@ class OutputGenerator:
                 response += random.choice(RESPONSES[itype+'-empty']).format(
                     count=count,
                     n=n,
-                    p=input['meal'],
+                    m=input['meal'],
                 )
 
         # show restaurant's location
