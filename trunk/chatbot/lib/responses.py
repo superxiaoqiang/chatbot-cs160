@@ -64,25 +64,37 @@ RESPONSES = {
         'Sorry, no {cuisine} restaurants are available.',
     ),
     'list-price-range': (
-        'I have found {count} restaurants with prices between {pmin}$ and {pmax}$. Here are {n} of them: {r_list}.',
+        'I have {count} restaurants with prices between {pmin}$ and {pmax}$. Here are {n} of them: {r_list}.',
     ),
     'list-price-range-empty': (
         'Sorry, I have no restaurants costing between {pmin}$ and {pmax}$ price range.',
         'No restaurants are available in the {pmin}-{pmax}$ price range.',
     ),
     'list-price-single': (
-        'I have found {count} restaurants at price {p}$. Here are {n} of them: {r_list}.',
+        'I have {count} restaurants at price {p}$. Here are {n} of them: {r_list}.',
     ),
     'list-price-single-empty': (
         'Sorry, I have no restaurants costing {p}$.',
         'No restaurants are available at price {p}$.',
     ),
     'list-meal-single': (
-        'I have found {count} restaurants serving {m}. Here are {n} of them: {r_list}.',
+        'I have {count} restaurants serving {m}. Here are {n} of them: {r_list}.',
     ),
     'list-meal-single-empty': (
         'Sorry, I have no restaurants serving {p}$.',
         'No restaurants are available that serve {p}$.',
+    ),
+    'undo': (
+        'Ok, your previous request was undone.',
+    ),
+    'undo-error': (
+        'Sorry, could not undo.',
+        'I could not undo your request.',
+        'Nothing to undo.'
+    ),
+    'undo-empty': (
+        'Ok. You are now starting your search from scratch.',
+        'Request undone. Starting from scratch.',
     ),
     'confirmation': (
         'Ok, great.',

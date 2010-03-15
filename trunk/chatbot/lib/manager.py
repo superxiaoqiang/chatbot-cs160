@@ -43,7 +43,7 @@ class Chatbot(cmd.Cmd):
 
         # process the parsed input
         # prepare it for output manager
-        self.internal_state.process_input(input)
+        input = self.internal_state.process_input(input)
         response = self.output_generator.respond(input)
 
         # output response
