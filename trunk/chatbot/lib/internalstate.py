@@ -81,18 +81,12 @@ class InternalState:
 
             if it[0] == 'single':
 
-                if it[1] == 'detail' \
-                  or it[1] == 'phone':
+                if it[1] in set(['detail', 'phone',
+                    'price', 'location']):
                     filters.update({'Name': input['restaurant']})
 
                 elif it[1] == 'cuisine':
                     filters.update({'Cuisine': input['cuisine']})
-
-                elif it[1] == 'location':
-                    filters.update({'Name': input['restaurant']})
-                    
-                elif it[1] == 'price':
-                    filters = {'Name': input['restaurant']}
 
                 r_list = self._xmlparser.get_restaurants(filters)
                 if r_list:
