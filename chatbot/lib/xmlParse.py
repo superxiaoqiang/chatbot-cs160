@@ -25,6 +25,8 @@ class xmlParse:
             "Latitude", "Longitude","Phone","Zone","Price","Field13","Cuisine",
             "Review","Rating","MealsServed","Field18","Field19","CreditCards",
             "Reservation","Field22","FoodQuality","Decor","Service","Cost"]
+        self.xml_field_ints = ['Key', 'Latitude', 'Longitude', 'FoodQuality',
+            'Decor', 'Service', 'Cost', 'Field6']
         
     def load_xml(self,source):
         try:
@@ -42,6 +44,11 @@ class xmlParse:
     def search_array_string(self,rest_list,field,data_str):
         return [restaurant for restaurant in rest_list
                 if data_str.lower() in self.node_string(restaurant,field).lower()]
+
+    def search_array_int(self, rest_list, field, data_int):
+        """field must contain int values"""
+        return [restaurant for restaurant in rest_list
+                if data_int == int(self.node_string(restaurant,field))]
 
     def search_array_range(self,rest_list,field,range_min,range_max):
         return [ restaurant for restaurant
@@ -79,12 +86,15 @@ class xmlParse:
             elif field == "maxPrice":
                 filtered_rest_list = self.search_array_range(filtered_rest_list,
                         "Cost",0,int(value))
-            elif field not in self.xml_field_names:
-                print field + "is not a valid field and will be ignored!"
-                pass
-            else:
+            elif field in self.xml_field_ints:
+                filtered_rest_list = self.search_array_int(
+                        filtered_rest_list, field, int(value))
+            elif field in self.xml_field_names:
                 filtered_rest_list = self.search_array_string(
                         filtered_rest_list,field,value)
+            else:
+                print field + "is not a valid field and will be ignored!"
+                pass
         return [self.xml_to_dictionary(r) for r in filtered_rest_list]
 
     

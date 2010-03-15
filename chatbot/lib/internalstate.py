@@ -96,10 +96,17 @@ class InternalState:
             if it[0] == 'list':
                 filters = []
 
+                # price range
                 if it[1] == 'price' and it[2] == 'range':
                     filters = {
                         'minPrice': input['min'],
                         'maxPrice': input['max'],
+                    }
+
+                # exact price
+                if it[1] == 'price' and it[2] == 'single':
+                    filters = {
+                        'Cost': input['price'],
                     }
 
                 input['list'] = self._xmlparser.get_restaurants(filters)
