@@ -24,3 +24,5 @@ class colors:
     END = '\033[0m'
 
 XML_SOURCE = "data/nyc-restaurants.xml"
+
+MEALS_SET = set(['breakfast', 'brunch', 'lunch', 'dinner', 'late night', ])

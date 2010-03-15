@@ -105,9 +105,10 @@ class InputParser:
 
         # need to merge NN and JJ for this step
         w['NNJJ'] = set(w.get('NN', []) + w.get('JJ', []))
-        if 'breakfast' in w['NNJJ']:
+        meal = constants.MEALS_SET & w['NNJJ']
+        if meal:
             resp['type'] = 'list-meal-single'
-            resp['meal'] = 'breakfast'
+            resp['meal'] = meal.pop()
             return resp
 
         # from here on there must be nouns
