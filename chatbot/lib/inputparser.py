@@ -136,7 +136,7 @@ class InputParser:
             resp['type'] = 'single-phone'
             return resp
                 
-        # matches a phone number request
+        # matches a single meal request
         if NN_set & constants.MEALS_SET:
             r_name = w.get('NNP', [None])[0] or \
                 w['NN'][-1]

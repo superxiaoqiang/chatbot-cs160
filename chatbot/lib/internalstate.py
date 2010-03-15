@@ -79,6 +79,26 @@ class InternalState:
                 input['type'] = 'single-detail'
                 it = input['type'].split('-')
 
+            if it[0] == 'undo':
+                popped = False
+                for i in range(0, 2):
+                    item = self.pop_stack()
+                    if not item:
+                        break
+                    elif i == 1:
+                        popped = True
+                item = self.peek_stack()
+                if item:
+                    input = item['input'].copy()
+                    input['undo'] = True
+                    top['input'] = input
+                    log.debug('Filters: {f}'.format(f=item['filters']))
+                    return input
+                elif popped:
+                    input['type'] = 'undo-empty'
+                else:
+                    input['type'] = 'undo-error'
+
             if it[0] == 'single':
 
                 if it[1] in set(['detail', 'phone',
@@ -137,10 +157,12 @@ class InternalState:
     def reset_stack(self):
         self.stack = []
 
-    def pop_stack(self, count=None):
+    def pop_stack(self, count=-1):
         """Pop from stack"""
-        self.stack.pop(count)
+        if self.count <= 0:
+            return None
         self.count -= 1
+        return self.stack.pop(count)
 
     def push_stack(self, element):
         """Push to stack"""

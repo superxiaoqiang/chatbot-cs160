@@ -58,7 +58,7 @@ grammar = [
     },
     # matches: Yes
     { 'matches': {
-      'greeting': r'yes|yeah|sure|ok|go ahead|sounds good.{0,20}',
+      'confirm': r'yes|yeah|sure|ok|go ahead|sounds good.{0,20}',
       },
       'semantics': {
       },
@@ -66,10 +66,18 @@ grammar = [
     },
     # matches: start over
     { 'matches': {
-      'greeting': r'.*\bstart\b\s+\bover\b.*',
+      'reset': r'.*\bstart\b\s+\bover\b.*',
       },
       'semantics': {
       },
       'type': 'reset',
+    },
+    # matches: undo
+    { 'matches': {
+      'undo': r'.*\b(undo|scratch\b\s+\bthat|go\b\s+\bback)\b.*',
+      },
+      'semantics': {
+      },
+      'type': 'undo',
     },
 ]

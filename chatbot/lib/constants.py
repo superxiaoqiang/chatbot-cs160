@@ -8,8 +8,6 @@ NAME_KEYWORDS = set(['restaurant', 'place', 'bar', 'joint', 'cafeteria', 'cafe',
 
 PHONE_KEYWORDS = set(['phone'])
 
-MEAL_KEYWORDS = set(['breakfast','lunch','brunch','dinner','late-night'])
-
 SPELLCHECK = True
 DICT_DIR = '/usr/share/myspell/dicts/'
 

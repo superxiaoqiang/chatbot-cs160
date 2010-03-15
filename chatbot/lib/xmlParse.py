@@ -63,6 +63,23 @@ class xmlParse:
                     >= int(range_min) and 
                     int(restaurant[field]) <= int(range_max))]
 
+    # negations of the above
+    def search_array_n_string(self,rest_list,field,data_str):
+        return [restaurant for restaurant in rest_list
+                if data_str.lower() not in restaurant[field].lower()]
+
+    def search_array_n_int(self, rest_list, field, data_int):
+        """field must contain int values"""
+        return [restaurant for restaurant in rest_list
+                if data_int != int(restaurant[field])]
+
+    def search_array_n_range(self,rest_list,field,range_min,range_max):
+        return [ restaurant for restaurant
+                in rest_list if (int(restaurant[field])
+                    <= int(range_min) and 
+                    int(restaurant[field]) >= int(range_max))]
+    # end of negations ^^
+
     def xml_to_dictionary(self,restaurant):
         ret_dict = { }
         for field in self.xml_field_names:
