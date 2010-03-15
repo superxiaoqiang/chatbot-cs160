@@ -74,6 +74,7 @@ class InputParser:
         resp['type'] = 'nomatch'
         VDB_set = {}
         WP_set = {}
+        VB_set = {}
         tagset = self.build_tagset(input)
         resp['words'] = self.build_keywords(tagset)
         w = resp['words']
@@ -87,9 +88,10 @@ class InputParser:
         for word in tagset:
             if word[1] == 'VBD':
                 VDB_set =  word[0]
-        for word in tagset:
             if word[1] == 'WP':
-                WP_set =  word[0]        
+                WP_set =  word[0]     
+            if word[1] == 'VB':
+                VB_set =  word[0]       
         if 'neighborhood' in VDB_set and 'what' in WP_set:
             if w.get('NNP', [None])[0]: 
                 r_name = w.get('NNP', [None])[0]             
@@ -97,6 +99,7 @@ class InputParser:
                 return resp
             
             r_name = w.get('NNP', [None])[0] 
+            print r_name
             resp['restaurant'] = r_name
             resp['type'] = 'single-zone'
             return resp
@@ -157,6 +160,15 @@ class InputParser:
 
             resp['restaurant'] = r_name
             resp['type'] = 'single-phone'
+            return resp
+            
+        # matches for smoking
+        if 'smoking' in NN_set and ('allow' in VB_set or 'allow' in NN_set):
+            r_name = w.get('NNP', [None])[0] or \
+                        w['NN'][-1]
+
+            resp['restaurant'] = r_name
+            resp['type'] = 'single-smoke'
             return resp
             
                 
