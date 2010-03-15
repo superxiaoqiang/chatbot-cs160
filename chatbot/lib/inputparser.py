@@ -84,12 +84,16 @@ class InputParser:
 
         #matches "how expensive it is" and "is it expensive"
         if 'expensive' in set(w.get('JJ', ())):
-            r_name = w.get('NNP', [None])[0] or \
-                         w['NN'][-1]
-              
+            if w.get('NNP', [None])[0]: 
+                r_name = w.get('NNP', [None])[0]             
+            else :
+                return resp
+            
+       
+            r_name = w.get('NNP', [None])[0] 
             resp['restaurant'] = r_name
             resp['type'] = 'single-price'
-            
+            return resp
             
         if 'between' in set(w.get('IN', ())) \
             or 'price' in set(w.get('NN', ())):
