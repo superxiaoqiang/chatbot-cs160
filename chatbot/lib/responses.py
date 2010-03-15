@@ -71,6 +71,13 @@ RESPONSES = {
         'Sorry, I have no restaurants costing {p}$.',
         'No restaurants are available at price {p}$.',
     ),
+    'list-meal-single': (
+        'I have found {count} restaurants serving {m}. Here are {n} of them: {r_list}.',
+    ),
+    'list-meal-single-empty': (
+        'Sorry, I have no restaurants serving {p}$.',
+        'No restaurants are available that serve {p}$.',
+    ),
     'confirmation': (
         'Ok, great.',
         'I\'m glad to hear that.',

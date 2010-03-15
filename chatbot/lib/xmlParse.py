@@ -27,7 +27,14 @@ class xmlParse:
             "Reservation","Field22","FoodQuality","Decor","Service","Cost"]
         self.xml_field_ints = ['Key', 'Latitude', 'Longitude', 'FoodQuality',
             'Decor', 'Service', 'Cost', 'Field6']
-        
+
+        self._rest_list = []
+        for r in self._rest_array:
+            self._rest_list.append(
+                self.xml_to_dictionary(r)
+            )
+
+
     def load_xml(self,source):
         try:
             sock = urllib.urlopen(source)
@@ -43,18 +50,18 @@ class xmlParse:
         
     def search_array_string(self,rest_list,field,data_str):
         return [restaurant for restaurant in rest_list
-                if data_str.lower() in self.node_string(restaurant,field).lower()]
+                if data_str.lower() in restaurant[field].lower()]
 
     def search_array_int(self, rest_list, field, data_int):
         """field must contain int values"""
         return [restaurant for restaurant in rest_list
-                if data_int == int(self.node_string(restaurant,field))]
+                if data_int == int(restaurant[field])]
 
     def search_array_range(self,rest_list,field,range_min,range_max):
         return [ restaurant for restaurant
-                in rest_list if (int(self.node_string(restaurant,field))
+                in rest_list if (int(restaurant[field])
                     >= int(range_min) and 
-                    int(self.node_string(restaurant,field)) <= int(range_max))]
+                    int(restaurant[field]) <= int(range_max))]
 
     def xml_to_dictionary(self,restaurant):
         ret_dict = { }
@@ -62,7 +69,7 @@ class xmlParse:
             ret_dict[field] = self.node_string(restaurant,field).strip()
         return ret_dict
         
-    def get_restaurants(self,filters):
+    def get_restaurants(self, filters=[], init_list=[]):
         """
         Takes in a dictionary of fields and desired values
         returns a list of matching restaurants
@@ -75,9 +82,15 @@ class xmlParse:
         @rtype: C{list}
             returns a list of dictionaries
         """
-        filtered_rest_list = self._rest_array
+
+        if not init_list:
+            # make a copy of the original list
+            init_list = list(self._rest_list)
+
+        filtered_rest_list = init_list
+
         if not filters:
-            return [self.xml_to_dictionary(r) for r in filtered_rest_list]
+            return filtered_rest_list
 
         for field,value in filters.iteritems():
             if field == "minPrice":
@@ -95,7 +108,7 @@ class xmlParse:
             else:
                 print field + "is not a valid field and will be ignored!"
                 pass
-        return [self.xml_to_dictionary(r) for r in filtered_rest_list]
+        return filtered_rest_list
 
     
 if __name__ == "__main__":
