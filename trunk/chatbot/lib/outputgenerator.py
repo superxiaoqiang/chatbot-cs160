@@ -144,6 +144,17 @@ class OutputGenerator:
                 response += random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
                 
         # show restaurant's phone #
+        elif itype == 'single-smoke':
+            if input['list']:
+                response += random.choice(RESPONSES[itype]).format(
+                    name=input['list'][0]['Name'],
+                    smoke=input['list'][0]['field22'],
+                )
+            else:
+                response += random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
+                
+                
+        # show restaurant's phone #
         elif itype == 'single-price':
             if input['list']:
                 response += random.choice(RESPONSES[itype]).format(
