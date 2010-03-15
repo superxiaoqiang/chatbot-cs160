@@ -20,6 +20,12 @@ RESPONSES = {
     'single-phone-empty': (
         'Sorry, I do not have a phone number listed for {name}.',
     ),
+    'single-location': (
+        '{name} is located at {location}.',
+    ),
+    'single-location-empty': (
+        'Sorry, we do not have an address listed for {name}.',
+    ),
     'leading-single-detail': (
         'Is {name} a restaurant? You may respond by saying yes. If not, perhaps {name} is a type of cuisine or a city?',
     ),
