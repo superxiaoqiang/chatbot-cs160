@@ -121,8 +121,8 @@ class InputParser:
             # price between a and b
             # require at least 2 numerals
             if len(price_range) >= 2:
-                resp['min'] = min(price_range)
-                resp['max'] = max(price_range)
+                resp['min'] = min(map(int, price_range))
+                resp['max'] = max(map(int, price_range))
                 resp['type'] = 'list-price-range'
                 return resp
 

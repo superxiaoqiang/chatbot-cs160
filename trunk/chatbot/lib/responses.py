@@ -126,8 +126,8 @@ RESPONSES = {
         'I have {count} restaurants serving {m}. Here are {n} of them: {r_list}.',
     ),
     'list-meal-single-empty': (
-        'Sorry, I have no restaurants serving {p}$.',
-        'No restaurants are available that serve {p}$.',
+        'Sorry, I have no restaurants serving {m}.',
+        'No restaurants are available that serve {m}.',
     ),
     'undo': (
         'Ok, your previous request was undone.',
