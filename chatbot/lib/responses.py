@@ -18,7 +18,7 @@ RESPONSES = {
         'The phone number of {name} is {phone}.',
     ),
     'single-phone-empty': (
-        'Sorry, we do not have a phone number listed for {name}.',
+        'Sorry, I do not have a phone number listed for {name}.',
     ),
     'leading-single-detail': (
         'Is {name} a restaurant? You may respond by saying yes. If not, perhaps {name} is a type of cuisine or a city?',
@@ -28,7 +28,7 @@ RESPONSES = {
     ),
     'single-detail-empty': (
         'Could not find any information about the restaurant {name}.',
-        'We have no record of restaurants named {name}.',
+        'I have no record of restaurants named {name}.',
         'Sorry, no restaurants named {name} are available.',
     ),
     'single-detail-confirm': (
@@ -48,14 +48,14 @@ RESPONSES = {
     ),
     'single-cuisine-empty': (
         'Could not find any information about a {cuisine} restaurant.',
-        'We have no record of {cuisine} restaurants.',
+        'I have no record of {cuisine} restaurants.',
         'Sorry, no {cuisine} restaurants are available.',
     ),
     'list-price-range': (
-        'We have found {count} restaurants with prices between {pmin}$ and {pmax}$. Here are {n} of them: {r_list}.',
+        'I have found {count} restaurants with prices between {pmin}$ and {pmax}$. Here are {n} of them: {r_list}.',
     ),
     'list-price-range-empty': (
-        'Sorry, we have no restaurants costing between {pmin}$ and {pmax}$ price range.',
+        'Sorry, I have no restaurants costing between {pmin}$ and {pmax}$ price range.',
         'No restaurants are available in the {pmin}-{pmax}$ price range.',
     ),
     'confirmation': (
