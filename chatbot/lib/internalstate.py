@@ -90,6 +90,9 @@ class InternalState:
 
                 elif it[1] == 'location':
                     filters.update({'Name': input['restaurant']})
+                    
+                elif it[1] == 'price':
+                    filters = {'Name': input['restaurant']}
 
                 r_list = self._xmlparser.get_restaurants(filters)
                 if r_list:

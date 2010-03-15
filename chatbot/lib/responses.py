@@ -24,7 +24,13 @@ RESPONSES = {
         '{name} is located at {location}.',
     ),
     'single-location-empty': (
-        'Sorry, we do not have an address listed for {name}.',
+        'Sorry, I do not have an address listed for {name}.',
+    ),
+    'single-price': (
+        'An average meal at {name} costs {price}$.',
+    ),
+    'single-price-empty': (
+        'Sorry, I don\'t have any information about how expensive {name} is.',
     ),
     'leading-single-detail': (
         'Is {name} a restaurant? You may respond by saying yes. If not, perhaps {name} is a type of cuisine or a city?',
