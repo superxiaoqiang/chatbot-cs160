@@ -72,7 +72,8 @@ class InputParser:
         """Parse input using NLTK parser+chunker"""
         resp = {}
         resp['type'] = 'nomatch'
-
+        VDB_set = {}
+        WP_set = {}
         tagset = self.build_tagset(input)
         resp['words'] = self.build_keywords(tagset)
         w = resp['words']
@@ -81,7 +82,25 @@ class InputParser:
             if constants.DEBUG:
                 log.debug("No words: " + str(resp))
             return resp
-
+        
+        #finds neighborhood    
+        for word in tagset:
+            if word[1] == 'VBD':
+                VDB_set =  word[0]
+        for word in tagset:
+            if word[1] == 'WP':
+                WP_set =  word[0]        
+        if 'neighborhood' in VDB_set and 'what' in WP_set:
+            if w.get('NNP', [None])[0]: 
+                r_name = w.get('NNP', [None])[0]             
+            else :
+                return resp
+            
+            r_name = w.get('NNP', [None])[0] 
+            resp['restaurant'] = r_name
+            resp['type'] = 'single-zone'
+            return resp
+        
         #matches "how expensive it is" and "is it expensive"
         if 'expensive' in set(w.get('JJ', ())):
             if w.get('NNP', [None])[0]: 
@@ -140,14 +159,6 @@ class InputParser:
             resp['type'] = 'single-phone'
             return resp
             
-        # matches a phone number request
-        if 'smoking' in NN_set and 'allow' in NN_set:
-            r_name = w.get('NNP', [None])[0] or \
-                        w['NN'][-1]
-
-            resp['restaurant'] = r_name
-            resp['type'] = 'single-smoke'
-            return resp
                 
         # matches a single meal request
         if NN_set & constants.MEALS_SET:

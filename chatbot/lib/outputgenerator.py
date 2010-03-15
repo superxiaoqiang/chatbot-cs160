@@ -120,8 +120,18 @@ class OutputGenerator:
                     location=input['list'][0]['Address'],
                 )    
             else:
+                response += random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])      
+                  
+        # show restaurant's neighborhood
+        elif itype == 'single-zone':
+            if input['list']:
+                response += random.choice(RESPONSES[itype]).format(
+                    name=input['list'][0]['Name'],
+                    zone=input['list'][0]['Zone'],
+                )    
+            else:
                 response += random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])        
-                
+                        
         # show restaurant's meal
         elif itype == 'single-meal':
             if input['list']:
