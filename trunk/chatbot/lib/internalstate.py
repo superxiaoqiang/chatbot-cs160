@@ -254,13 +254,12 @@ class InternalState:
             if prev and 'list' in prev['input']['type'] \
                 and input['count'] > 0:
                 filters.update(prev['filters'])
-                r_list = self._xmlparser.get_restaurants(filters)
                 if r_list:
                     top['listmode'] = True
-                    random.shuffle(r_list)
-                    input['list'] = r_list
-            else:
-                input['list'] = []
+
+            r_list = self._xmlparser.get_restaurants(filters)
+            random.shuffle(r_list)
+            input['list'] = r_list
 
         if it[0] == 'reset':
             self.reset_stack()
