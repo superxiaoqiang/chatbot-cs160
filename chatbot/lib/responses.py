@@ -111,21 +111,21 @@ RESPONSES = {
         'Never heard of {cuisine} food before...  try something else.',
     ),
     'list-price-range': (
-        'I have {count} restaurants with prices between {pmin}$ and {pmax}$. Here are {n} of them: {r_list}.',
+        'I have {count} restaurants with prices between {pmin}$ and {pmax}$. One of them is {r_list}.',
     ),
     'list-price-range-empty': (
         'Sorry, I have no restaurants costing between {pmin}$ and {pmax}$ price range.',
         'No restaurants are available in the {pmin}-{pmax}$ price range.',
     ),
     'list-price-single': (
-        'I have {count} restaurants at price {p}$. Here are {n} of them: {r_list}.',
+        'I have {count} restaurants at price {p}$. One of them is {r_list}.',
     ),
     'list-price-single-empty': (
         'Sorry, I have no restaurants costing {p}$.',
         'No restaurants are available at price {p}$.',
     ),
     'list-meal-single': (
-        'I have {count} restaurants serving {m}. Here are {n} of them: {r_list}.',
+        'I have {count} restaurants serving {m}. One of them is {r_list}.',
     ),
     'list-meal-single-empty': (
         'Sorry, I have no restaurants serving {m}.',
