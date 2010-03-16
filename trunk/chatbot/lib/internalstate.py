@@ -138,8 +138,16 @@ class InternalState:
 
             if it[0] == 'list':
                 # check whether to start from previous or from scratch
+                log.debug(input)
                 if prev and prev['input']['type'].split('-')[0] == 'list':
                     filters.update(prev['filters'])
+                    if it[1] == 'price':
+                        if filters.get('Cost', None):
+                            del filters['Cost']
+                        if filters.get('minPrice', None):
+                            del filters['minPrice']
+                        if filters.get('maxPrice', None):
+                            del filters['maxPrice']
 
                 # price range
                 if it[1] == 'price' and it[2] == 'range':

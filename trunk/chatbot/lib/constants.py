@@ -1,7 +1,7 @@
 # constants defined here
 import re
 
-LIST_DEFAULT_COUNT = 5
+LIST_DEFAULT_COUNT = 1
 
 
 NAME_KEYWORDS = set(['restaurant', 'place', 'bar', 'joint', 'cafeteria', 'cafe', 'canteen', 'chophouse', 'coffee shop', 'diner', 'dining room', 'dive', 'doughtnut shop', 'drive-in', 'eatery', 'eating house', 'eating place', 'fast-food place', 'greasy spoon', 'grill', 'hamburger stand', 'hashery', 'hideaway', 'hotdog stand', 'inn', 'luncheonette', 'lunchroom', 'night club', 'outlet', 'pizzeria', 'saloon', 'soda fountain', 'watering hole', 'charcuterie', 'deli', 'sandwich shop', 'subway sho'])
@@ -30,4 +30,4 @@ MEALS_SET = set(['breakfast', 'brunch', 'lunch', 'dinner', 'late night', ])
 # how many steps to look back in the internal state
 # used in internalstate.py:prepare_input
 # must be negative
-LOOKBACK = -4
+LOOKBACK = -5
