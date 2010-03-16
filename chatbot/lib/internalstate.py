@@ -1,10 +1,9 @@
 # Internal state manager
 #
-import logging
-import re
-import random
+import logging, re, random
 import constants
 from xmlParse import *
+from address import *
 
 if constants.DEBUG:
     log = logging.getLogger(__name__)
@@ -21,7 +20,8 @@ class InternalState:
         self.stack = []
         self._xmlparser = xmlParse(constants.XML_SOURCE)
         self.count = 0
-        self.last_list_pos = None
+        self.last_list_pos = -1
+        self.address = Address()
 
     def prepare_input(self, raw_input):
         """Prepare raw input"""
@@ -115,13 +115,13 @@ class InternalState:
 
         if it[0] == 'name':
 
-            if prev['filters'].get('Name', False) and \
+            if prev and prev['filters'].get('Name', False) and \
                 top.get('internal', False):
                 r_list = prev['input']['list']
                 filters = prev['filters']
 
             elif it[1] in set(['detail', 'phone', 'zone',
-                'price', 'location' , 'field22']):
+                'price', 'location' , 'field22', 'distance']):
                 filters.update({'Name': input['restaurant']})
                 r_list = self._xmlparser.get_restaurants(filters)
 
@@ -132,6 +132,11 @@ class InternalState:
             if r_len == 1:
                 it[0] = 'single'
                 input['type'] = '-'.join(it)
+                if it[1] == 'distance':
+                    input['miles'] = self.address.calc_distance(
+                        r_list[0]['Latitude'],
+                        r_list[0]['Longitude'],
+                    )
                 input['list'] = r_list
             elif r_len > 1:
                 random.shuffle(r_list)
@@ -174,24 +179,30 @@ class InternalState:
             input['list'] = self._xmlparser.get_restaurants(filters)
 
         if it[0] == 'single':
-
-            if it[1] == 'listitem' and self.last_list_pos:
+            if it[1] == 'listitem' and self.last_list_pos >= 0:
                 # get the last listmode from stack
                 stack_list = self.peek_stack(self.last_list_pos)
+                filters = stack_list['filters']
                 # update input type
                 it = stack_list['input']['type'].split('-')
-                it[0] = 'single'
-                input['type'] = '-'.join(it)
 
                 if input['listitem'] > 0 and \
                     input['listitem'] <= len(stack_list['input']['list']):
+                    it[0] = 'single'
                     # this is the restaurant just picked
                     r = stack_list['input']['list'][input['listitem']-1]
                     # update filters accordingly
-                    filters = stack_list['filters']
                     filters.update({'Key': r['Key'], })
                     # finally, update the input
                     input['list'] = [r]
+                    if it[1] == 'distance':
+                        input['miles'] = \
+                        self.address.calc_distance(
+                            r['Latitude'],
+                            r['Longitude'],
+                        )
+
+                input['type'] = '-'.join(it)
 
             elif it[1] == 'listitem':
                 input['type'] = 'nomatch'

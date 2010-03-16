@@ -25,8 +25,9 @@ class xmlParse:
             "Latitude", "Longitude","Phone","Zone","Price","Field13","Cuisine",
             "Review","Rating","MealsServed","Field18","Field19","CreditCards",
             "Reservation","Field22","FoodQuality","Decor","Service","Cost"]
-        self.xml_field_ints = ['Key', 'Latitude', 'Longitude', 'FoodQuality',
+        self.xml_field_ints = ['Key', 'FoodQuality',
             'Decor', 'Service', 'Cost', 'Field6']
+        self.xml_field_floats = ['Latitude', 'Longitude']
 
         self._rest_list = []
         for r in self._rest_array:
@@ -56,6 +57,11 @@ class xmlParse:
         """field must contain int values"""
         return [restaurant for restaurant in rest_list
                 if data_int == int(restaurant[field])]
+
+    def search_array_float(self, rest_list, field, data_float):
+        """field must contain int values"""
+        return [restaurant for restaurant in rest_list
+                if data_float == float(restaurant[field])]
 
     def search_array_range(self,rest_list,field,range_min,range_max):
         return [ restaurant for restaurant
@@ -118,6 +124,9 @@ class xmlParse:
                         "Cost",0,int(value))
             elif field in self.xml_field_ints:
                 filtered_rest_list = self.search_array_int(
+                        filtered_rest_list, field, int(value))
+            elif field in self.xml_field_floats:
+                filtered_rest_list = self.search_array_float(
                         filtered_rest_list, field, int(value))
             elif field in self.xml_field_names:
                 filtered_rest_list = self.search_array_string(
