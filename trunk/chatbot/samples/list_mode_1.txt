@@ -1,0 +1,30 @@
+Dialog Timestamp: 2010-03-15 19:03:57.659838
+ME: Hi
+NYRC: Hello. How may I help you?
+ME: I love you!
+NYRC: Wait... I'm confused.  Can you say that in a different way?
+ME: Sure
+NYRC: Yay!
+ME: I want a mexican restaurant
+NYRC: Well... Burritoville is a good Mexican restaurant.
+ME: tell me more about it
+NYRC: I have 4 restaurants named Burritoville. 
+1. At 1489 First Ave. Midtown, Upper East Side, Uptown, Manhattan
+2. At 36 Water St. Downtown, Lower Manhattan, Manhattan
+3. At 1606 Third Ave. Uptown, Manhattan
+4. At 144 Chambers St. Downtown, TriBeCa/SoHo, Manhattan
+Enter a number (1-4) for more information about that specific restaurant.
+ME: I'll pick 3
+NYRC: Burritoville serves Mexican/Tex-Mex food for Lunch, Dinner, which should roughly cost $12.  They are located at 1606 Third Ave. Uptown, Manhattan, and they also offer: no alcohol served, delivery, take out, catering, private parties.
+ME: is it expensive?
+NYRC: An average meal at Burritoville costs 12$.
+ME: where is it located?
+NYRC: My apologies. I am not sure what you mean... can you rephrase your question?
+ME: what neighborhood is it in?
+NYRC: Burritoville is in Uptown, Manhattan.
+ME: what's its phone number
+NYRC: Burritoville's phone number is: (212) 410-2255.
+ME: Let me see 1
+NYRC: Burritoville is located at 1489 First Ave. Midtown, Upper East Side, Uptown, Manhattan, and serves Mexican/Tex-Mex cuisine, for Lunch, Dinner. The average cost per person is $12. This restaurant also offers: no alcohol served, delivery, take out, catering, private parties.
+ME: quit
+NYRC: Good idea, I'm hungry too!
