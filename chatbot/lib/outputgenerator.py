@@ -53,11 +53,17 @@ class OutputGenerator:
                 i = 0
                 for r in input['list']:
                     i += 1
+                    miles = round(r.get('miles', 0), 2)
+                    if miles:
+                        miles = str(miles) + ' miles, '
+                    else:
+                        miles = ''
                     response_list += single_response.format(
                         i=i,
                         name=r['Name'],
                         location=r['Address'],
                         zone=r['Zone'],
+                        miles=miles
                     )
                 response += random.choice(RESPONSES['show-list']).format(
                     count=count,
@@ -263,10 +269,16 @@ class OutputGenerator:
                 i = 0
                 for r in input['list']:
                     i += 1
+                    miles = round(r.get('miles', 0), 2)
+                    if miles:
+                        miles = str(miles) + ' miles, '
+                    else:
+                        miles = ''
                     response_list += single_response.format(
                         i=i,
                         location=r['Address'],
                         zone=r['Zone'],
+                        miles=miles
                     )
                 response += random.choice(RESPONSES['list-mode']).format(
                     name=input['restaurant'],
@@ -294,14 +306,25 @@ class OutputGenerator:
                 response += random.choice(RESPONSES['single-mode-empty']).format(i=input['listitem'])
 
         # show a single restaurant for this type of cuisine
-        elif itype == 'single-cuisine':
+        elif itype == 'random-cuisine':
             if input['list']:
                 response += random.choice(RESPONSES[itype]).format(
-                    cuisine=input['cuisine'].capitalize(),
+                    cuisine=input['list'][0]['Cuisine'],
                     name=input['list'][0]['Name'],
                 )
             else:
                 response += random.choice(RESPONSES[itype+'-empty']).format(cuisine=input['cuisine'].capitalize())
+
+        # show a single restaurant for this zone
+        elif itype == 'random-city':
+            if input['list']:
+                response += random.choice(RESPONSES[itype]).format(
+                    zone=input['list'][0]['Zone'],
+                    city=input['list'][0]['City'],
+                    name=input['list'][0]['Name'],
+                )
+            else:
+                response += random.choice(RESPONSES[itype+'-empty']).format(city=input['city'].capitalize())
 
         # if nothing matches, just repeat the input as a string
         else:

@@ -11,7 +11,7 @@ PHONE_KEYWORDS = set(['phone'])
 SPELLCHECK = True
 DICT_DIR = '/usr/share/myspell/dicts/'
 
-DEBUG = True
+DEBUG = False
 
 DEFAULT_RESPONSE = {'type': 'nomatch'}
 
@@ -34,4 +34,7 @@ LOOKBACK = -5
 
 QUALITIES = set(['high', 'low', 'moderate', 'medium'])
 
-LIST_MAX = 8
+LIST_MAX = 10
+LIST_COUNT = 4
+
+CLOSE_MILES = 5
