@@ -55,15 +55,24 @@ RESPONSES = {
         '{name} can be found in {zone}.',
     ),
     'single-zone-empty': (
-        'Sorry, I do not have a neighborhood listed for {zone}.',
-        'I\'m sorry, I cannot find a neighborhood for {zone}.',
-        'Ooops... I don\'t think I have the neighborhood for {zone}.',
+        'Sorry, I do not have a neighborhood listed for {name}.',
+        'I\'m sorry, I cannot find a neighborhood for {name}.',
+        'Ooops... I don\'t think I have the neighborhood for {name}.',
     ),
     'single-price': (
         'An average meal at {name} costs {price}$.',
     ),
     'single-price-empty': (
         'Sorry, I don\'t have any information about how expensive {name} is.',
+    ),
+    'single-distance': (
+        'You are about {miles} miles away from {name}.',
+        'You are over {miles} miles away from {name}.',
+        'There are more than {miles} miles between you and {name}.',
+    ),
+    'single-distance-empty': (
+        'Sorry, I have no idea how far {name} is.',
+        'I don\'t have a clue how far {name} is.',
     ),
     'leading-name-detail': (
         'Is {name} a restaurant? You may respond by saying yes. If not, perhaps {name} is a type of cuisine or a city?',
@@ -74,20 +83,17 @@ RESPONSES = {
         'Sure, I can tell you more about {name} restaurant, shall I?',
         'You want to know more about {name} restaurant, is this correct?',
     ),
-    'name-detail-single': (
-        "\n{i}. In {zone}, address {location}",
-        "\n{i}. At {location} {zone}",
+    'single-detail': (
+        '{name} is located at {location} {zone}, and serves {cuisine} cuisine, for {meals_served}. The average cost per person is ${cost}. This restaurant also offers: {extras}.',
+        '{name} serves {cuisine} food for {meals_served}, which should roughly cost ${cost}.  They are located at {location} {zone}, and they also offer: {extras}.',
     ),
-    'name-detail-empty': (
+    'single-detail-empty': (
         'Sorry, I could not find any information about the restaurant {name}.',
         'Could not find any information about the restaurant {name}.',
         'I have no record of restaurants named {name}.',
         'Sorry, no restaurants named {name} are available.',
     ),
-    'single-detail': (
-        '{name} is located at {location} {zone}, and serves {cuisine} cuisine, for {meals_served}. The average cost per person is ${cost}. This restaurant also offers: {extras}.',
-        '{name} serves {cuisine} food for {meals_served}, which should roughly cost ${cost}.  They are located at {location} {zone}, and they also offer: {extras}.',
-    ),
+
     'single-cuisine': (
         'A good {cuisine} restaurant is {name}.',
         'I heard of a decent restaurant called {name} that serves {cuisine} food.',
@@ -163,59 +169,15 @@ RESPONSES = {
         'I\'m afraid I don\'t understand what you mean... can you say that in a different way?',
         'Wait... I\'m confused.  Can you say that in a different way?',
     ),
-    'name-detail': (
-        'I have {n} restaurants named {name}. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
-    ),
-    'name-detail-single': (
+    'list-mode-single': (
         "\n{i}. In {zone}, address {location}",
         "\n{i}. At {location} {zone}",
     ),
-    'single-detail-empty': (
+    'single-mode-empty': (
         '{i} is not in the list.',
         'Oops, {i} is not in my list.',
     ),
-    'name-zone': (
+    'list-mode': (
         'I have {n} restaurants named {name}. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
-    ),
-    'name-zone-single': (
-        "\n{i}. In {zone}, address {location}",
-        "\n{i}. At {location} {zone}",
-    ),
-    'single-zone-empty': (
-        '{i} is not in the list.',
-        'Oops, {i} is not in my list.',
-    ),
-    'name-meal': (
-        'I have {n} restaurants named {name}. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
-    ),
-    'name-meal-single': (
-        "\n{i}. In {zone}, address {location}",
-        "\n{i}. At {location} {zone}",
-    ),
-    'single-meal-empty': (
-        '{i} is not in the list.',
-        'Oops, {i} is not in my list.',
-    ),
-    'name-phone': (
-        'I have {n} restaurants named {name}. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
-    ),
-    'name-phone-single': (
-        "\n{i}. In {zone}, address {location}",
-        "\n{i}. At {location} {zone}",
-    ),
-    'single-phone-empty': (
-        '{i} is not in the list.',
-        'Oops, {i} is not in my list.',
-    ),
-    'name-price': (
-        'I have {n} restaurants named {name}. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
-    ),
-    'name-price-single': (
-        "\n{i}. In {zone}, address {location}",
-        "\n{i}. At {location} {zone}",
-    ),
-    'single-price-empty': (
-        '{i} is not in the list.',
-        'Oops, {i} is not in my list.',
     ),
 }

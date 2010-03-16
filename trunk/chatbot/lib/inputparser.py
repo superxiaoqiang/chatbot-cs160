@@ -85,9 +85,6 @@ class InputParser:
 
         # store nouns
         NN_set = set(w.get('NN', []))
-        if not NN_set:
-            if constants.DEBUG:
-                log.debug("No NN: " + str(resp))
 
         # finds neighborhood
         for word in tagset:
@@ -205,6 +202,16 @@ class InputParser:
                 except:
                     pass
 
+        # distance / how far
+        if ('far' in set(w.get('RB', []))
+            and 'how' in set(w.get('WRB', []))
+            ) or ('distance' in NN_set):
+            r = w.get('NNP', [None])[0]
+            if r:
+                resp['type'] = 'name-distance'
+                resp['restaurant'] = string.capitalize(r)
+                return resp
+
         if constants.DEBUG:
             log.debug(resp)
         return resp
@@ -278,6 +285,8 @@ class InputParser:
             JJ: {<JJ.*>}
         # preposition or conjunction
             IN: {<IN>}
+        # used for 'how far'
+            RB: {<.*RB>}
         """
         # parse for keywords
         regexp_parser = nltk.RegexpParser(grammar)
@@ -289,7 +298,8 @@ class InputParser:
         # go for noun phrases first
         for subtree in tree.subtrees(filter =
             lambda t: t.node == 'NP' or t.node == 'CD' \
-                or t.node == 'JJ' or t.node == 'IN'):
+                or t.node == 'JJ' or t.node == 'IN' \
+                or t.node == 'RB' ):
             keyword = list(subtree.leaves())
             keyword = self.format_keywords(keyword)
 
