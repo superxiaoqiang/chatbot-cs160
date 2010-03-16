@@ -170,6 +170,31 @@ class InternalState:
                     'Cost': input['price'],
                 })
 
+            # quality food or service
+            if it[1] == 'quality':
+                if it[2] == 'food':
+                    rf = 'FoodQuality'
+                else:
+                    rf = 'Service'
+                if filters.get('min'+rf, None):
+                    del filters['min'+rf]
+                if filters.get('max'+rf, None):
+                    del filters['max'+rf]
+
+                if input['degree'] == 'high':
+                    filters.update({
+                        'min'+rf: 24,
+                    })
+                elif input['degree'] == 'low':
+                    filters.update({
+                        'max'+rf: 17,
+                    })
+                else:
+                    filters.update({
+                        'max'+rf: 23,
+                        'min'+rf: 18,
+                    })
+
             # meal
             if it[1] == 'meal' and it[2] == 'single':
                 filters.update({
@@ -211,8 +236,9 @@ class InternalState:
             elif it[1] == 'cuisine':
                 filters.update({'Cuisine': input['cuisine']})
                 r_list = self._xmlparser.get_restaurants(filters)
-                random.shuffle(r_list)
-                input['list'] = [r_list[0]]
+                if r_list:
+                    random.shuffle(r_list)
+                    input['list'] = [r_list[0]]
 
         if it[0] == 'reset':
             self.reset_stack()

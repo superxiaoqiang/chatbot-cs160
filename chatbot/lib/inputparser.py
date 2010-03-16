@@ -144,6 +144,16 @@ class InputParser:
             resp['meal'] = meal.copy().pop()
             return resp
 
+        # matches a quality list
+        if 'quality' in NN_set and \
+            (constants.QUALITIES & w['NNJJ']) and \
+            (set(['food', 'service']) & w['NNJJ']):
+            resp['degree'] = (constants.QUALITIES \
+                & w['NNJJ']).pop()
+            resp['type'] = 'list-quality-' + \
+                (set(['food', 'service']) & w['NNJJ']).pop()
+            return resp
+
         # matches a phone number request
         if NN_set & constants.PHONE_KEYWORDS:
             r_name = w.get('NNP', [None])[0] or \
