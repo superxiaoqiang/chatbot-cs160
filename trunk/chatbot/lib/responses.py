@@ -65,26 +65,28 @@ RESPONSES = {
     'single-price-empty': (
         'Sorry, I don\'t have any information about how expensive {name} is.',
     ),
-    'leading-single-detail': (
+    'leading-name-detail': (
         'Is {name} a restaurant? You may respond by saying yes. If not, perhaps {name} is a type of cuisine or a city?',
         'Wait, you\'re referring to {name} as a restaurant, and not a city or cuisine, correct?',
+        'Would you like more information about the restaurant {name}?',
+        'Should I tell you more about {name} restaurant?',
+        'Interested in knowing more about {name} restaurant?',
+        'Sure, I can tell you more about {name} restaurant, shall I?',
+        'You want to know more about {name} restaurant, is this correct?',
     ),
-    'single-detail': (
-        '{name} is located at {location}, and serves {cuisine} cuisine, for {meals_served}. The average cost per person is ${cost}. This restaurant also offers: {extras}.',
-        '{name} serves {cuisine} food for {meals_served}, which should roughly cost ${cost}.  They are located at {location}, and they also offer: {extras}.',
+    'name-detail-single': (
+        "\n{i}. In {zone}, address {location}",
+        "\n{i}. At {location} {zone}",
     ),
-    'single-detail-empty': (
+    'name-detail-empty': (
         'Sorry, I could not find any information about the restaurant {name}.',
         'Could not find any information about the restaurant {name}.',
         'I have no record of restaurants named {name}.',
         'Sorry, no restaurants named {name} are available.',
     ),
-    'single-detail-confirm': (
-        'Would you like more information about {name}?',
-        'Should I tell you more about {name}?',
-        'Interested in knowing more about {name}?',
-        'Sure, I can tell you more about {name}, shall I?',
-        'You want to know more about {name}, is this correct?',
+    'single-detail': (
+        '{name} is located at {location} {zone}, and serves {cuisine} cuisine, for {meals_served}. The average cost per person is ${cost}. This restaurant also offers: {extras}.',
+        '{name} serves {cuisine} food for {meals_served}, which should roughly cost ${cost}.  They are located at {location} {zone}, and they also offer: {extras}.',
     ),
     'single-cuisine': (
         'A good {cuisine} restaurant is {name}.',
@@ -160,5 +162,60 @@ RESPONSES = {
         'My apologies. I am not sure what you mean... can you rephrase your question?'
         'I\'m afraid I don\'t understand what you mean... can you say that in a different way?',
         'Wait... I\'m confused.  Can you say that in a different way?',
+    ),
+    'name-detail': (
+        'I have {n} restaurants named {name}. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
+    ),
+    'name-detail-single': (
+        "\n{i}. In {zone}, address {location}",
+        "\n{i}. At {location} {zone}",
+    ),
+    'single-detail-empty': (
+        '{i} is not in the list.',
+        'Oops, {i} is not in my list.',
+    ),
+    'name-zone': (
+        'I have {n} restaurants named {name}. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
+    ),
+    'name-zone-single': (
+        "\n{i}. In {zone}, address {location}",
+        "\n{i}. At {location} {zone}",
+    ),
+    'single-zone-empty': (
+        '{i} is not in the list.',
+        'Oops, {i} is not in my list.',
+    ),
+    'name-meal': (
+        'I have {n} restaurants named {name}. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
+    ),
+    'name-meal-single': (
+        "\n{i}. In {zone}, address {location}",
+        "\n{i}. At {location} {zone}",
+    ),
+    'single-meal-empty': (
+        '{i} is not in the list.',
+        'Oops, {i} is not in my list.',
+    ),
+    'name-phone': (
+        'I have {n} restaurants named {name}. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
+    ),
+    'name-phone-single': (
+        "\n{i}. In {zone}, address {location}",
+        "\n{i}. At {location} {zone}",
+    ),
+    'single-phone-empty': (
+        '{i} is not in the list.',
+        'Oops, {i} is not in my list.',
+    ),
+    'name-price': (
+        'I have {n} restaurants named {name}. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
+    ),
+    'name-price-single': (
+        "\n{i}. In {zone}, address {location}",
+        "\n{i}. At {location} {zone}",
+    ),
+    'single-price-empty': (
+        '{i} is not in the list.',
+        'Oops, {i} is not in my list.',
     ),
 }
