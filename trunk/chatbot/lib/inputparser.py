@@ -86,6 +86,21 @@ class InputParser:
         # store nouns
         NN_set = set(w.get('NN', []))
 
+        # matches a request for a list
+        if 'list' in NN_set \
+            or 'List' in w.get('NNP', []):
+            resp['count'] = w.get('CD', [constants.LIST_COUNT])[0]
+            resp['type'] = 'show-list'
+            if set(['serving', 'serve']) & set(w.get('VBG', [])):
+                resp['meal'] = (NN_set & constants.MEALS_SET).pop()
+            if 'in' in w.get('IN', []):
+                resp['zone'] = w.get('NNP', [None])[0]
+            if 'close' in w.get('VBD', []) \
+                or 'close' in w.get('JJ', []) \
+                or 'close' in NN_set:
+                resp['distance'] = True
+            return resp
+
         # finds neighborhood
         for word in tagset:
             if word[1] == 'VBD':
@@ -105,7 +120,7 @@ class InputParser:
             return resp
 
         # matches "how expensive it is" and "is it expensive"
-        if 'expensive' in set(w.get('JJ', ())):
+        if 'expensive' in w.get('JJ', ()):
             if w.get('NNP', [None])[0]: 
                 r_name = w.get('NNP', [None])[0]
             else :
@@ -116,7 +131,7 @@ class InputParser:
             resp['type'] = 'name-price'
             return resp
 
-        if 'between' in set(w.get('IN', ())) \
+        if 'between' in w.get('IN', ()) \
             or 'price' in NN_set:
             price_range = w.get('CD', ())
 
@@ -173,19 +188,27 @@ class InputParser:
             resp['meal'] = word.lower()
             return resp
 
-        # matches a request for a list
-        if 'list' in NN_set:
-            resp['count'] = w.get('CD', [constants.LIST_DEFAULT_COUNT])[0]
-            resp['type'] = 'show-list'
-            return resp
-
         # matches a request for an address
         if 'address' in NN_set:
             r_name = w.get('NNP', [None])[0] or \
                         w['NN'][-1]
             resp['restaurant'] = r_name
-            resp['type'] = 'single-location'
+            resp['type'] = 'name-location'
             return resp
+
+        # matches a restaurant in neighborhood
+        if 'in' in w.get('IN', []) and \
+            NN_set & constants.NAME_KEYWORDS:
+            r_name = w.get('NNP', [None])[0]
+            if not r_name:
+                for kw in reversed(w['NN']):
+                    if kw not in constants.NAME_KEYWORDS:
+                        r_name = kw
+                        break
+            if r_name:
+                resp['type'] = 'random-city'
+                resp['city'] = string.capitalize(r_name)
+                return resp
 
         # matches a request for a cuisine type
         if NN_set & constants.NAME_KEYWORDS:
@@ -196,7 +219,7 @@ class InputParser:
                         r_name = kw
                         break
             if r_name:
-                resp['type'] = 'single-cuisine'
+                resp['type'] = 'random-cuisine'
                 resp['cuisine'] = string.capitalize(r_name)
                 return resp
 
@@ -213,8 +236,8 @@ class InputParser:
                     pass
 
         # distance / how far
-        if ('far' in set(w.get('RB', []))
-            and 'how' in set(w.get('WRB', []))
+        if ('far' in w.get('RB', [])
+            and 'how' in w.get('WRB', [])
             ) or ('distance' in NN_set):
             r = w.get('NNP', [None])[0]
             if r:
@@ -292,11 +315,13 @@ class InputParser:
         # numerals
             CD: {<CD|LS>}
         # chunk adjectives
-            JJ: {<JJ.*>}
+            JJ: {<JJ.*|VBD>}
         # preposition or conjunction
             IN: {<IN>}
         # used for 'how far'
             RB: {<.*RB>}
+        # used for 'serving'
+            VBG: {<VBG>}
         """
         # parse for keywords
         regexp_parser = nltk.RegexpParser(grammar)
@@ -309,7 +334,7 @@ class InputParser:
         for subtree in tree.subtrees(filter =
             lambda t: t.node == 'NP' or t.node == 'CD' \
                 or t.node == 'JJ' or t.node == 'IN' \
-                or t.node == 'RB' ):
+                or t.node == 'RB' or t.node == 'VBG'):
             keyword = list(subtree.leaves())
             keyword = self.format_keywords(keyword)
 

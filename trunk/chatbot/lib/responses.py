@@ -75,8 +75,8 @@ RESPONSES = {
         'I don\'t have a clue how far {name} is.',
     ),
     'leading-name-detail': (
-        'Is {name} a restaurant? You may respond by saying yes. If not, perhaps {name} is a type of cuisine or a city?',
-        'Wait, you\'re referring to {name} as a restaurant, and not a city or cuisine, correct?',
+        'Is {name} a restaurant? You may respond by saying yes. If not, perhaps {name} is a type of cuisine (such as Mexican) or a neighborhood (such as Manhattan)?',
+        'Wait, you\'re referring to {name} as a restaurant, and not a neighborhood (such as Manhattan) or cuisine (such as Italian), correct?',
         'Would you like more information about the restaurant {name}?',
         'Should I tell you more about {name} restaurant?',
         'Interested in knowing more about {name} restaurant?',
@@ -93,8 +93,7 @@ RESPONSES = {
         'I have no record of restaurants named {name}.',
         'Sorry, no restaurants named {name} are available.',
     ),
-
-    'single-cuisine': (
+    'random-cuisine': (
         'A good {cuisine} restaurant is {name}.',
         'I heard of a decent restaurant called {name} that serves {cuisine} food.',
         'Well... {name} is a good {cuisine} restaurant.',
@@ -102,19 +101,29 @@ RESPONSES = {
         'For a {cuisine} restaurant, I would recommend {name}.',
         'Mmmmm.... {cuisine} food.... Try {name}. I have heard good things about that place.',
     ),
-    'single-cuisine-confirm': (
-        'Do you want more information about a {cuisine} restaurant.',
-        'Should I tell you a {cuisine} restaurant?',
-        'You want a {cuisine} restaurant, is this correct?',
-        'Would you like to know more information about a {cuisine} restaurant?',
-    ),
-    'single-cuisine-empty': (
+    'random-cuisine-empty': (
         'Could not find any information about a {cuisine} restaurant.',
         'I have no record of {cuisine} restaurants.',
         'Sorry, no {cuisine} restaurants are available.',
         'I can\'t find any {cuisine} restaurants in my database',
         'I have never heard of {cuisine} restaurants before.  Think of something else...',
         'Never heard of {cuisine} food before...  try something else.',
+    ),
+    'random-city': (
+        'A good restaurant in {zone} is {name}.',
+        'I heard of a decent restaurant called {name} in {zone}.',
+        'Well... {name} is a good restaurant in {zone}.',
+        'If you to eat in {city}, perhaps you should try {name}.',
+        'For a restaurant in {city}, I would recommend {name}.',
+        'Aaaahhh, {city}... Try {name}, it is in {zone}. I have heard good things about that place.',
+    ),
+    'random-city-empty': (
+        'Could not find any information about a restaurant in {city}.',
+        'I have no record of restaurants in {city}.',
+        'Sorry, no restaurants in {city} are available.',
+        'I can\'t find any restaurants in {city} in my database',
+        'I have never heard of the {city} area before.  Think of something else...',
+        'Never heard of {city} before...  try something else.',
     ),
     'list-quality-food': (
         'I have {count} restaurants with {degree} quality food. One of them is {r_list}.',
@@ -189,8 +198,8 @@ RESPONSES = {
         'Started over. You know, erasing my memory makes me sad.',
     ),
     'list-mode-single': (
-        "\n{i}. In {zone} address {location}",
-        "\n{i}. At {location} {zone}",
+        "\n{i}. {miles}in {zone} address {location}",
+        "\n{i}. {miles}at {location} {zone}",
     ),
     'single-mode-empty': (
         '{i} is not in the list.',
@@ -206,7 +215,7 @@ RESPONSES = {
         'No list to show.',
     ),
     'show-list-single': (
-        "\n{i}. {name}, located in {zone} address {location}",
-        "\n{i}. {name}, located at {location}, in {zone}",
+        "\n{i}. {miles}{name}, located in {zone} address {location}",
+        "\n{i}. {miles}{name}, located at {location}, in {zone}",
     ),
 }

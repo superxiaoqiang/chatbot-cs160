@@ -26,7 +26,7 @@ grammar = [
       'semantics': {
       'cuisine': r'.*\b(?P<term>[A-Z][a-z]+(( [A-Z][a-z]+)+)?)\b[\s]+restaurant\b.*',
       },
-      'type': 'single-cuisine',
+      'type': 'random-cuisine',
     },
     # matches: quit
     { 'matches': {

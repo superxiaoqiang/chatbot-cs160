@@ -240,12 +240,18 @@ class InternalState:
                 input['type'] = 'nomatch'
                 del input['listitem']
 
-            elif it[1] == 'cuisine':
+        if it[0] == 'random':
+
+            if it[1] == 'cuisine':
                 filters.update({'Cuisine': input['cuisine']})
-                r_list = self._xmlparser.get_restaurants(filters)
-                if r_list:
-                    random.shuffle(r_list)
-                    input['list'] = [r_list[0]]
+
+            elif it[1] == 'city':
+                filters.update({'City': input['city']})
+
+            r_list = self._xmlparser.get_restaurants(filters)
+            if r_list:
+                random.shuffle(r_list)
+                input['list'] = [r_list[0]]
 
         if it[0] == 'show' and \
             it[1] == 'list':
@@ -254,10 +260,30 @@ class InternalState:
             if prev and 'list' in prev['input']['type'] \
                 and input['count'] > 0:
                 filters.update(prev['filters'])
-                if r_list:
-                    top['listmode'] = True
+                top['listmode'] = True
+            if input.get('zone', None):
+                filters['Zone'] = input['zone']
+            if input.get('meal', None):
+                filters['MealsServed'] = input['meal']
 
             r_list = self._xmlparser.get_restaurants(filters)
+
+            # filter out restaurants from far away
+            if input.get('distance', False):
+                try:
+                    i = 0
+                    while True:
+                        r_list[i]['miles'] = self.address.calc_distance(
+                            r_list[i]['Latitude'],
+                            r_list[i]['Longitude'],
+                        )
+                        if r_list[i]['miles'] > constants.CLOSE_MILES:
+                            del r_list[i]
+                        else:
+                            i += 1
+                except:
+                    pass
+
             random.shuffle(r_list)
             input['list'] = r_list
 

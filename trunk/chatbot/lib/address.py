@@ -27,9 +27,11 @@ class Address:
     def calc_distance(self, latitude, longitude):
         # The following formulas are used to convert lat/lng into miles
         # get address if not set
+        if (not latitude) or (not longitude):
+            return 100000.0
         if not self.lat or not self.lng:
-            addr = raw_input(constants.colors.NYRC + 'NYRC: What is your address? '
-                + constants.colors.END)
+            addr = raw_input(constants.colors.NYRC + 'NYRC: What is your address?'
+                + constants.colors.END + '\nME: ')
             self.get_address(addr)
         x = 69.1 * (float(latitude) - self.lat)
         y = 69.1 * (float(longitude) - self.lng) * math.cos(self.lat * (1 / 57.3))
