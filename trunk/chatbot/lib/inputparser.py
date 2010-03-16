@@ -176,7 +176,7 @@ class InputParser:
         # matches a request for a list
         if 'list' in NN_set:
             resp['count'] = w.get('CD', [constants.LIST_DEFAULT_COUNT])[0]
-            resp['type'] = 'list'
+            resp['type'] = 'show-list'
             return resp
 
         # matches a request for an address

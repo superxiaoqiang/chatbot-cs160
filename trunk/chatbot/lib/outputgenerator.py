@@ -39,6 +39,34 @@ class OutputGenerator:
             'undo-error', 'undo-empty', 'reset']):
             response += random.choice(RESPONSES[itype])
 
+        # can't show anything, not in list mode
+        elif itype == 'show-list-none':
+            response += random.choice(RESPONSES[itype])
+
+        elif itype == 'show-list':
+            count = len(input['list'])
+            if count:
+                n = min(int(input['count']), constants.LIST_MAX)
+                input['list'] = input['list'][:n]
+                single_response = random.choice(RESPONSES['show-list-single'])
+                response_list = ''
+                i = 0
+                for r in input['list']:
+                    i += 1
+                    response_list += single_response.format(
+                        i=i,
+                        name=r['Name'],
+                        location=r['Address'],
+                        zone=r['Zone'],
+                    )
+                response += random.choice(RESPONSES['show-list']).format(
+                    count=count,
+                    n=n,
+                    list=response_list,
+                )
+            else:
+                response += random.choice(RESPONSES[itype+'-empty'])
+
         # list by price range
         elif itype == 'list-price-range':
             count = len(input['list'])

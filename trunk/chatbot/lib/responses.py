@@ -189,7 +189,7 @@ RESPONSES = {
         'Started over. You know, erasing my memory makes me sad.',
     ),
     'list-mode-single': (
-        "\n{i}. In {zone}, address {location}",
+        "\n{i}. In {zone} address {location}",
         "\n{i}. At {location} {zone}",
     ),
     'single-mode-empty': (
@@ -198,5 +198,15 @@ RESPONSES = {
     ),
     'list-mode': (
         'I have {n} restaurants named {name}. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
+    ),
+    'show-list': (
+        'I have a total of {count} restaurants in your selection, listing {n} below. {list}\nEnter a number (1-{n}) for more information about that specific restaurant.',
+    ),
+    'show-list-empty': (
+        'No list to show.',
+    ),
+    'show-list-single': (
+        "\n{i}. {name}, located in {zone} address {location}",
+        "\n{i}. {name}, located at {location}, in {zone}",
     ),
 }

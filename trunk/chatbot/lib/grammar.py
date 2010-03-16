@@ -10,18 +10,6 @@
 #       These will be returned as a list.
 #   # type (string)
 grammar = [
-    # matches: List the 5 most expensive restaurants in Location Name
-    { 'matches': {
-      'list': r'.*\blist\b.*',
-      'restaurants': r'.*\brestaurants\b.*',
-      },
-      'semantics': {
-      'count': r'.*(?P<term>[0-9]+).*',
-      'price': r'.*\b(?P<term>expensive|pricey|cheap|low cost)\b.*',
-      'location': r'.*\bin (?P<term>[A-Z][a-z]+(([\s,:]+[A-Z][a-z]+)+)?)\b.*',
-      },
-      'type': 'list',
-    },
     # matches: I want to know more about Gilt
     { 'matches': {
       'more': r'.*\b(know more about)|(tell .* more about)\b.*',
