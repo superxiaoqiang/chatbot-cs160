@@ -159,7 +159,7 @@ RESPONSES = {
         'Could you repeat that, I didn\'t understand.',
         'I\'m sorry, can you rephrase that?',
         'I\'m not sure what you mean, can you repeat that?',
-        'My apologies. I am not sure what you mean... can you rephrase your question?'
+        'My apologies. I am not sure what you mean... can you rephrase your question?',
         'I\'m afraid I don\'t understand what you mean... can you say that in a different way?',
         'Wait... I\'m confused.  Can you say that in a different way?',
     ),
