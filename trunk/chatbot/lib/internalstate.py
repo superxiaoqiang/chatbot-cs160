@@ -246,7 +246,7 @@ class InternalState:
                 filters.update({'Cuisine': input['cuisine']})
 
             elif it[1] == 'city':
-                filters.update({'City': input['city']})
+                filters.update({'Zone': input['city']})
 
             r_list = self._xmlparser.get_restaurants(filters)
             if r_list:
