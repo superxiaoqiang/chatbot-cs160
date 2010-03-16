@@ -50,7 +50,7 @@ grammar = [
     },
     # matches: Hello
     { 'matches': {
-      'greeting': r'hi|hello|hey.{0,20}',
+      'greeting': r'hi|hello|hey\b.{0,20}',
       },
       'semantics': {
       },
@@ -58,7 +58,7 @@ grammar = [
     },
     # matches: Yes
     { 'matches': {
-      'confirm': r'yes|yeah|sure|ok|go ahead|sounds good.{0,20}',
+      'confirm': r'yes|yeah|sure|ok|go ahead|sounds good\b.{0,20}',
       },
       'semantics': {
       },
