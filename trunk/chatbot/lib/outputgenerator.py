@@ -28,7 +28,7 @@ class OutputGenerator:
         # if empty, switch to single-empty
         if not input.get('listitem') and \
             itype in set(['name-detail', 'name-zone', 'name-meal',
-                'name-phone', 'name-price', 'name-distance']):
+                'name-phone', 'name-price', 'name-distance', 'name-location']):
             count = len(input['list'])
             if count == 0:
                 itype = itype.split('-')
@@ -261,7 +261,7 @@ class OutputGenerator:
 
         # show details about a single restaurant
         elif itype in set(['name-detail', 'name-zone', 'name-meal',
-                'name-phone', 'name-price', 'name-distance']):
+                'name-phone', 'name-price', 'name-distance', 'name-location']):
             count = len(input['list'])
             if count:
                 single_response = random.choice(RESPONSES['list-mode-single'])
