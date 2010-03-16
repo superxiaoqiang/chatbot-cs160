@@ -147,8 +147,9 @@ class InternalState:
             # check whether to start from previous or from scratch
             if constants.DEBUG:
                 log.debug(input)
-            if prev and prev['input']['type'].split('-')[0] == 'list':
-                filters.update(prev['filters'])
+            stack_list = self.peek_stack(self.last_list_pos)
+            if  stack_list and self.last_list_pos >= 0:
+                filters.update(stack_list['filters'])
                 if it[1] == 'price':
                     if filters.get('Cost', None):
                         del filters['Cost']
@@ -207,13 +208,19 @@ class InternalState:
             if it[1] == 'listitem' and self.last_list_pos >= 0:
                 # get the last listmode from stack
                 stack_list = self.peek_stack(self.last_list_pos)
-                filters = stack_list['filters']
+                filters.update(stack_list['filters'])
                 # update input type
                 it = stack_list['input']['type'].split('-')
 
                 if input['listitem'] > 0 and \
                     input['listitem'] <= len(stack_list['input']['list']):
-                    it[0] = 'single'
+                    if it[0] == 'name':
+                        # the old name listing
+                        it[0] = 'single'
+                    else:
+                        # the new filtering list
+                        it = ['single', 'detail']
+
                     # this is the restaurant just picked
                     r = stack_list['input']['list'][input['listitem']-1]
                     # update filters accordingly
@@ -239,6 +246,21 @@ class InternalState:
                 if r_list:
                     random.shuffle(r_list)
                     input['list'] = [r_list[0]]
+
+        if it[0] == 'show' and \
+            it[1] == 'list':
+            if constants.DEBUG:
+                log.debug(input)
+            if prev and 'list' in prev['input']['type'] \
+                and input['count'] > 0:
+                filters.update(prev['filters'])
+                r_list = self._xmlparser.get_restaurants(filters)
+                if r_list:
+                    top['listmode'] = True
+                    random.shuffle(r_list)
+                    input['list'] = r_list
+            else:
+                input['list'] = []
 
         if it[0] == 'reset':
             self.reset_stack()

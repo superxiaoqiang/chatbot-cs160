@@ -33,3 +33,5 @@ MEALS_SET = set(['breakfast', 'brunch', 'lunch', 'dinner', 'late night', ])
 LOOKBACK = -5
 
 QUALITIES = set(['high', 'low', 'moderate', 'medium'])
+
+LIST_MAX = 8
