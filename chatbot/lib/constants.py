@@ -4,7 +4,7 @@ import re
 LIST_DEFAULT_COUNT = 1
 
 
-NAME_KEYWORDS = set(['restaurant', 'place', 'bar', 'joint', 'cafeteria', 'cafe', 'canteen', 'chophouse', 'coffee shop', 'diner', 'dining room', 'dive', 'doughtnut shop', 'drive-in', 'eatery', 'eating house', 'eating place', 'fast-food place', 'greasy spoon', 'grill', 'hamburger stand', 'hashery', 'hideaway', 'hotdog stand', 'inn', 'luncheonette', 'lunchroom', 'night club', 'outlet', 'pizzeria', 'saloon', 'soda fountain', 'watering hole', 'charcuterie', 'deli', 'sandwich shop', 'subway sho'])
+NAME_KEYWORDS = set(['food', 'restaurant', 'place', 'bar', 'joint', 'cafeteria', 'cafe', 'canteen', 'chophouse', 'coffee shop', 'diner', 'dining room', 'dive', 'doughtnut shop', 'drive-in', 'eatery', 'eating house', 'eating place', 'fast-food place', 'greasy spoon', 'grill', 'hamburger stand', 'hashery', 'hideaway', 'hotdog stand', 'inn', 'luncheonette', 'lunchroom', 'night club', 'outlet', 'pizzeria', 'saloon', 'soda fountain', 'watering hole', 'charcuterie', 'deli', 'sandwich shop', 'subway sho'])
 
 PHONE_KEYWORDS = set(['phone'])
 
