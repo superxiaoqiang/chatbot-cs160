@@ -28,7 +28,7 @@ class Chatbot(cmd.Cmd):
         
         LOG_FILENAME = str(datetime.now())
         logging.basicConfig(filename='logs/'+LOG_FILENAME,level=logging.DEBUG,format="")
-        logging.info( "Dialog Timestamp: " + LOG_FILENAME)
+        print  "Dialog Timestamp: " + LOG_FILENAME
         
         self.cmdloop(intro)
 
