@@ -214,6 +214,9 @@ class InternalState:
                 random.shuffle(r_list)
                 input['list'] = [r_list[0]]
 
+        if it[0] == 'reset':
+            self.reset_stack()
+
         # update the stack with
         if constants.DEBUG:
             log.debug(

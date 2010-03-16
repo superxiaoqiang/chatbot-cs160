@@ -160,7 +160,7 @@ RESPONSES = {
         'Brilliant!!!', 
         'YEEEEEEEEEEAAAAAAAHHHHHHHHHHHHH!!!!!!!',
     ),
-      'nomatch': (
+    'nomatch': (
         'I\'m sorry, I don\'t understand what you mean. Try again.',
         'Could you repeat that, I didn\'t understand.',
         'I\'m sorry, can you rephrase that?',
@@ -168,6 +168,11 @@ RESPONSES = {
         'My apologies. I am not sure what you mean... can you rephrase your question?',
         'I\'m afraid I don\'t understand what you mean... can you say that in a different way?',
         'Wait... I\'m confused.  Can you say that in a different way?',
+    ),
+    'reset': (
+        'I forgot all about it.',
+        'Starting over... Done. What? Now I don\'t remember a thing.',
+        'Started over. You know, erasing my memory makes me sad.',
     ),
     'list-mode-single': (
         "\n{i}. In {zone}, address {location}",
