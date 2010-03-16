@@ -26,6 +26,7 @@ class InternalState:
     def prepare_input(self, raw_input):
         """Prepare raw input"""
         new = {}
+        new['filters'] = {}
 
         # check current input for "it" and replace with restaurant name
         p_match = re.compile(r'.*\b(it|its)\b.*', re.IGNORECASE).match(raw_input)
@@ -40,6 +41,9 @@ class InternalState:
                     raw_input = p.sub(item['input']['list'][0]['Name'], raw_input)
                     # mark that context is added
                     new['internal'] = True
+                    carry_key = item['filters'].get('Key', None)
+                    if carry_key:
+                        new['filters']['Key'] = carry_key
                     break
                 except:
                     pass
@@ -59,7 +63,7 @@ class InternalState:
         """Process parsed input"""
         # get current item
         top = self.peek_stack()
-        filters = {}
+        filters = top['filters']
         # get previous item
         prev = self.peek_stack(-2)
         if top:
