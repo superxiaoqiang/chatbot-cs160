@@ -63,7 +63,11 @@ class xmlParse:
         return [restaurant for restaurant in rest_list
                 if data_float == float(restaurant[field])]
 
-    def search_array_range(self,rest_list,field,range_min,range_max):
+    def search_array_range(self,rest_list,field,range_min=None,range_max=None):
+        if not range_min:
+            range_min = 0
+        if not range_max:
+            range_max = 100000
         return [ restaurant for restaurant
                 in rest_list if (int(restaurant[field])
                     >= int(range_min) and 
@@ -118,10 +122,22 @@ class xmlParse:
         for field,value in filters.iteritems():
             if field == "minPrice":
                 filtered_rest_list = self.search_array_range(filtered_rest_list,
-                        "Cost",int(value),100000)
+                        "Cost",int(value))
             elif field == "maxPrice":
                 filtered_rest_list = self.search_array_range(filtered_rest_list,
-                        "Cost",0,int(value))
+                        "Cost",range_max=int(value))
+            elif field == "minFoodQuality":
+                filtered_rest_list = self.search_array_range(filtered_rest_list,
+                        "FoodQuality",int(value))
+            elif field == "maxFoodQuality":
+                filtered_rest_list = self.search_array_range(filtered_rest_list,
+                        "FoodQuality",range_max=int(value))
+            elif field == "minService":
+                filtered_rest_list = self.search_array_range(filtered_rest_list,
+                        "Service",int(value))
+            elif field == "maxService":
+                filtered_rest_list = self.search_array_range(filtered_rest_list,
+                        "Service",range_max=int(value))
             elif field in self.xml_field_ints:
                 filtered_rest_list = self.search_array_int(
                         filtered_rest_list, field, int(value))

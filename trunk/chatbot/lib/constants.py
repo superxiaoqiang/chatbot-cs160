@@ -31,3 +31,5 @@ MEALS_SET = set(['breakfast', 'brunch', 'lunch', 'dinner', 'late night', ])
 # used in internalstate.py:prepare_input
 # must be negative
 LOOKBACK = -5
+
+QUALITIES = set(['high', 'low', 'moderate', 'medium'])

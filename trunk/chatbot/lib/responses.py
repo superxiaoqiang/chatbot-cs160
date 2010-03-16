@@ -116,6 +116,20 @@ RESPONSES = {
         'I have never heard of {cuisine} restaurants before.  Think of something else...',
         'Never heard of {cuisine} food before...  try something else.',
     ),
+    'list-quality-food': (
+        'I have {count} restaurants with {degree} quality food. One of them is {r_list}.',
+    ),
+    'list-quality-food-empty': (
+        'Sorry, I have no restaurants of {degree} quality food.',
+        'No restaurants are available for {degree} quality food.',
+    ),
+    'list-quality-service': (
+        'I have {count} restaurants with {degree} quality service. One of them is {r_list}.',
+    ),
+    'list-quality-service-empty': (
+        'Sorry, I have no restaurants of {degree} quality service.',
+        'No restaurants are available for {degree} quality service.',
+    ),
     'list-price-range': (
         'I have {count} restaurants with prices between {pmin}$ and {pmax}$. One of them is {r_list}.',
     ),

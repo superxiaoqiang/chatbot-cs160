@@ -122,6 +122,33 @@ class OutputGenerator:
                     m=input['meal'],
                 )
 
+        # filter by quality
+        elif itype == 'list-quality-food' or itype == 'list-quality-service':
+            count = len(input['list'])
+            random.shuffle(input['list'])
+            n = min((count, constants.LIST_DEFAULT_COUNT))
+
+            # if found any
+            if n:
+                r_names = []
+                for i in range(0, n):
+                    r_names.append(input['list'][i]['Name'])
+
+                r_list = ", ".join(r_names)
+                response += random.choice(RESPONSES[itype]).format(
+                    r_list=r_list,
+                    count=count,
+                    n=n,
+                    degree=input['degree'],
+                )
+
+            else:
+                response += random.choice(RESPONSES[itype+'-empty']).format(
+                    count=count,
+                    n=n,
+                    degree=input['degree'],
+                )
+
         # show restaurant's location
         elif itype == 'single-distance':
             if input['list']:
