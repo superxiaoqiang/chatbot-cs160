@@ -74,7 +74,6 @@ class InputParser:
         resp['type'] = 'nomatch'
         VDB_set = {}
         WP_set = {}
-        VB_set = {}
         tagset = self.build_tagset(input)
         resp['words'] = self.build_keywords(tagset)
         w = resp['words']
@@ -83,42 +82,45 @@ class InputParser:
             if constants.DEBUG:
                 log.debug("No words: " + str(resp))
             return resp
-        
-        #finds neighborhood    
+
+        # store nouns
+        NN_set = set(w.get('NN', []))
+        if not NN_set:
+            if constants.DEBUG:
+                log.debug("No NN: " + str(resp))
+
+        # finds neighborhood
         for word in tagset:
             if word[1] == 'VBD':
                 VDB_set =  word[0]
+        for word in tagset:
             if word[1] == 'WP':
-                WP_set =  word[0]     
-            if word[1] == 'VB':
-                VB_set =  word[0]       
+                WP_set =  word[0]
         if 'neighborhood' in VDB_set and 'what' in WP_set:
             if w.get('NNP', [None])[0]: 
-                r_name = w.get('NNP', [None])[0]             
+                r_name = w.get('NNP', [None])[0]
             else :
                 return resp
-            
+
             r_name = w.get('NNP', [None])[0] 
-            print r_name
             resp['restaurant'] = r_name
-            resp['type'] = 'single-zone'
+            resp['type'] = 'name-zone'
             return resp
-        
-        #matches "how expensive it is" and "is it expensive"
+
+        # matches "how expensive it is" and "is it expensive"
         if 'expensive' in set(w.get('JJ', ())):
             if w.get('NNP', [None])[0]: 
-                r_name = w.get('NNP', [None])[0]             
+                r_name = w.get('NNP', [None])[0]
             else :
                 return resp
-            
-       
+
             r_name = w.get('NNP', [None])[0] 
             resp['restaurant'] = r_name
-            resp['type'] = 'single-price'
+            resp['type'] = 'name-price'
             return resp
-            
+
         if 'between' in set(w.get('IN', ())) \
-            or 'price' in set(w.get('NN', ())):
+            or 'price' in NN_set:
             price_range = w.get('CD', ())
 
             # price between a and b
@@ -138,19 +140,11 @@ class InputParser:
 
 
         # need to merge NN and JJ for this step
-        w['NNJJ'] = set(w.get('NN', []) + w.get('JJ', []))
+        w['NNJJ'] = NN_set | set(w.get('JJ', []))
         meal = constants.MEALS_SET & w['NNJJ']
         if meal:
             resp['type'] = 'list-meal-single'
-            resp['meal'] = meal.pop()
-            return resp
-
-
-        # from here on there must be nouns
-        NN_set = set(w.get('NN', []))
-        if not NN_set:
-            if constants.DEBUG:
-                log.debug("No NN: " + str(resp))
+            resp['meal'] = meal.copy().pop()
             return resp
 
         # matches a phone number request
@@ -159,26 +153,16 @@ class InputParser:
                         w['NN'][-1]
 
             resp['restaurant'] = r_name
-            resp['type'] = 'single-phone'
+            resp['type'] = 'name-phone'
             return resp
-            
-        # matches for smoking
-        if 'smoking' in NN_set and ('allow' in VB_set or 'allow' in NN_set):
-            r_name = w.get('NNP', [None])[0] or \
-                        w['NN'][-1]
 
-            resp['restaurant'] = r_name
-            resp['type'] = 'single-smoke'
-            return resp
-            
-                
         # matches a single meal request
         if NN_set & constants.MEALS_SET:
             r_name = w.get('NNP', [None])[0] or \
                 w['NN'][-1]
-              
+
             resp['restaurant'] = r_name
-            resp['type'] = 'single-meal'
+            resp['type'] = 'name-meal'
             resp['meal'] = word.lower()
             return resp
 
@@ -209,6 +193,17 @@ class InputParser:
                 resp['cuisine'] = string.capitalize(r_name)
                 return resp
 
+        # merge all numerals together for list-mode
+        w['CDLS'] = set(w.get('CD', []) + w.get('LS', []))
+        if w['CDLS']:
+            w_copy = w['CDLS'].copy()
+            while w_copy:
+                try:
+                    resp['listitem'] = int(w_copy.pop())
+                    resp['type'] = 'single-listitem'
+                    return resp
+                except:
+                    pass
 
         if constants.DEBUG:
             log.debug(resp)
@@ -277,8 +272,8 @@ class InputParser:
         grammar = r"""
         # chunk determiner/possessive, adjectives and nouns
             NP: {<DT|PP\$>?<JJ>*<NN.*>+}
-        # chunk sequences of proper nouns
-            CD: {<CD>}
+        # numerals
+            CD: {<CD|LS>}
         # chunk adjectives
             JJ: {<JJ.*>}
         # preposition or conjunction

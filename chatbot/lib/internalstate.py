@@ -21,26 +21,34 @@ class InternalState:
         self.stack = []
         self._xmlparser = xmlParse(constants.XML_SOURCE)
         self.count = 0
+        self.last_list_pos = None
 
     def prepare_input(self, raw_input):
         """Prepare raw input"""
         new = {}
+
         # check current input for "it" and replace with restaurant name
-        # look behind three lines
-        p = re.compile(r'\bit\b', re.IGNORECASE)
-        for i in range(-1, -4, -1):
-            try:
-                item = self.peek_stack(i)
-
-                # stop if no more items on stack
-                if not item:
+        p_match = re.compile(r'.*\b(it|its)\b.*', re.IGNORECASE).match(raw_input)
+        p = re.compile(r'\b(it|its|this place|that place)\b', re.IGNORECASE)
+        if p_match:
+            for i in range(-1, constants.LOOKBACK, -1):
+                try:
+                    item = self.peek_stack(i)
+                    # stop if no more items on stack
+                    if not item:
+                        break
+                    raw_input = p.sub(item['input']['list'][0]['Name'], raw_input)
+                    # mark that context is added
+                    new['internal'] = True
                     break
-                raw_input = p.sub(item['input']['list'][0]['Name'], raw_input)
+                except:
+                    pass
 
-                # mark that context is added
-                new['internal'] = True
-            except:
-                pass
+        # mark list position
+        item = self.peek_stack()
+        if item and item.get('listmode', None):
+            self.last_list_pos = self.count - 1
+            log.debug(self.last_list_pos)
 
         new['raw_input'] = raw_input
         # push raw input to stack
@@ -65,18 +73,18 @@ class InternalState:
                         it=prev['input']['type'],
                     ))
                     # carry over restaurant
-                    if prev['input']['type'] == 'leading-single-detail' \
-                        or prev['input']['type'] == 'single-detail':
-                        input['type'] = 'single-detail'
+                    if prev['input']['type'] == 'leading-name-detail' \
+                        or prev['input']['type'] == 'name-detail':
+                        input = prev['input']
+                        input['type'] = 'name-detail'
                         it = input['type'].split('-')
-                        input['restaurant'] = prev['input']['restaurant']
                 except:
                     pass
 
             # if it already has context, skip confirmation step
-            if top.get('internal', None) and \
-                it[0] == 'leading' and it[1] == 'single':
-                input['type'] = 'single-detail'
+            if top.get('internal', False) and \
+                it[0] == 'leading' and it[1] == 'name':
+                input['type'] = 'name-detail'
                 it = input['type'].split('-')
 
             if it[0] == 'undo':
@@ -99,19 +107,30 @@ class InternalState:
                 else:
                     input['type'] = 'undo-error'
 
-            if it[0] == 'single':
+            if it[0] == 'name':
 
-                if it[1] in set(['detail', 'phone', 'zone',
+                if prev['filters'].get('Name', False) and \
+                    top.get('internal', False):
+                    r_list = prev['input']['list']
+                    filters = prev['filters']
+
+                elif it[1] in set(['detail', 'phone', 'zone',
                     'price', 'location' , 'field22']):
                     filters.update({'Name': input['restaurant']})
+                    r_list = self._xmlparser.get_restaurants(filters)
 
-                elif it[1] == 'cuisine':
-                    filters.update({'Cuisine': input['cuisine']})
+                else:
+                    r_list = []
 
-                r_list = self._xmlparser.get_restaurants(filters)
-                if r_list:
+                r_len = len(r_list)
+                if r_len == 1:
+                    it[0] = 'single'
+                    input['type'] = '-'.join(it)
+                    input['list'] = r_list
+                elif r_len > 1:
                     random.shuffle(r_list)
-                    input['list'] = [r_list[0]]
+                    input['list'] = r_list
+                    top['listmode'] = True
 
             if it[0] == 'list':
                 # check whether to start from previous or from scratch
@@ -139,6 +158,35 @@ class InternalState:
 
                 input['list'] = self._xmlparser.get_restaurants(filters)
 
+            if it[0] == 'single':
+
+                if it[1] == 'listitem' and self.last_list_pos:
+                    # get the last listmode from stack
+                    stack_list = self.peek_stack(self.last_list_pos)
+                    # update input type
+                    it = stack_list['input']['type'].split('-')
+                    it[0] = 'single'
+                    input['type'] = '-'.join(it)
+
+                    if input['listitem'] > 0 and \
+                        input['listitem'] <= len(stack_list['input']['list']):
+                        # this is the restaurant just picked
+                        r = stack_list['input']['list'][input['listitem']-1]
+                        # update filters accordingly
+                        filters = stack_list['filters']
+                        filters.update({'Key': r['Key'], })
+                        # finally, update the input
+                        input['list'] = [r]
+
+                elif it[1] == 'listitem':
+                    input['type'] = 'nomatch'
+                    del input['listitem']
+
+                elif it[1] == 'cuisine':
+                    filters.update({'Cuisine': input['cuisine']})
+                    r_list = self._xmlparser.get_restaurants(filters)
+                    random.shuffle(r_list)
+                    input['list'] = [r_list[0]]
 
             # update the stack with
             if constants.DEBUG:

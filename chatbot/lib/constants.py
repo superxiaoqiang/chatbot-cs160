@@ -26,3 +26,8 @@ class colors:
 XML_SOURCE = "data/nyc-restaurants.xml"
 
 MEALS_SET = set(['breakfast', 'brunch', 'lunch', 'dinner', 'late night', ])
+
+# how many steps to look back in the internal state
+# used in internalstate.py:prepare_input
+# must be negative
+LOOKBACK = -4

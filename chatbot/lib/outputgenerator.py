@@ -120,7 +120,7 @@ class OutputGenerator:
                     location=input['list'][0]['Address'],
                 )    
             else:
-                response += random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])      
+                response += random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
                   
         # show restaurant's neighborhood
         elif itype == 'single-zone':
@@ -130,7 +130,7 @@ class OutputGenerator:
                     zone=input['list'][0]['Zone'],
                 )    
             else:
-                response += random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])        
+                response += random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
                         
         # show restaurant's meal
         elif itype == 'single-meal':
@@ -140,7 +140,7 @@ class OutputGenerator:
                     meal=input['list'][0]['Meal'],
                 )    
             else:
-                response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])        
+                response = random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
 
 
         # show restaurant's phone #
@@ -175,8 +175,32 @@ class OutputGenerator:
                 response += random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
 
         # ask leading question for details on a single restaurant
-        elif itype == 'leading-single-detail':
+        elif itype == 'leading-name-detail':
             response += random.choice(RESPONSES[itype]).format(name=input['restaurant'])
+
+        # show details about a single restaurant
+        elif itype in set(['name-detail', 'name-zone', 'name-meal',
+                'name-phone', 'name-price']):
+            count = len(input['list'])
+
+            if count:
+                single_response = random.choice(RESPONSES[itype+'-single'])
+                response_list = ''
+                i = 0
+                for r in input['list']:
+                    i += 1
+                    response_list += single_response.format(
+                        i=i,
+                        location=r['Address'],
+                        zone=r['Zone'],
+                    )
+                response += random.choice(RESPONSES[itype]).format(
+                    name=input['restaurant'],
+                    n=count,
+                    list=response_list,
+                )
+            else:
+                response += random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
 
         # show details about a single restaurant
         elif itype == 'single-detail':
@@ -192,7 +216,7 @@ class OutputGenerator:
                         input['list'][0]['Field19'].lower(),
                 )
             else:
-                response += random.choice(RESPONSES[itype+'-empty']).format(name=input['restaurant'])
+                response += random.choice(RESPONSES[itype+'-empty']).format(i=input['listitem'])
 
         # show a single restaurant for this type of cuisine
         elif itype == 'single-cuisine':
