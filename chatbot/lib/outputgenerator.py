@@ -36,7 +36,7 @@ class OutputGenerator:
                 itype = '-'.join(itype)
 
         if itype in set(['quit', 'greeting', 'confirmation', 'nomatch',
-            'undo-error', 'undo-empty']):
+            'undo-error', 'undo-empty', 'reset']):
             response += random.choice(RESPONSES[itype])
 
         # list by price range
